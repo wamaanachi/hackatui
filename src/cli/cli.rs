@@ -17,7 +17,6 @@ pub struct CliArgs {
 
     /// Gives a Summary of your hacking
     #[arg(
-        short = 's',
         long = "summary"
     )]
     summary: bool,
