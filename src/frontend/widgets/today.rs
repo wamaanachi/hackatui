@@ -3,15 +3,19 @@
 
 // im using ratatui official docs, when im stuck n stuff
 
-use ratatui::widgets::{Block, BorderType};
+use ratatui::widgets::{Block, BorderType, Paragraph};
 use ratatui::layout::Rect;
 use ratatui::Frame;
 
-fn render_today(frame: &mut Frame, area: Rect){
+pub fn render_today(frame: &mut Frame, area: Rect, time: &str){
 
     let today_box = Block::bordered()
-    .title("Today's Time")
-    .border_type(BorderType::Rounded);
+        .title("Today's Time")
+        .border_type(BorderType::Rounded);
 
-    frame.render_widget(today_box, area);
+    let today_widget = Paragraph::new(time)
+        .alignment(Alignment::left)
+        .block(today_box);
+
+    frame.render_widget(today_widget, area);
 }
