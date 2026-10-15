@@ -3,12 +3,12 @@
 // rn it is 1 bar, ill change it later
 // and this too is uncomplete as obv the api stuff is not done
 
-use ratatui::layout::Rect
+use ratatui::layout::Rect;
 use ratatui::style::{Style, Stylize};
 use ratatui::widgets::{Block, Gauge};
 use ratatui::Frame;
 
-fn render_progress(frame: &mut Frame, area:Rect, duration: &str, percent: u16){
+pub fn render_progress(frame: &mut Frame, area:Rect, duration: &str, percent: u16){
 
     let gauge = Gauge::default()
         .block(Block::bordered().title("Progress Time"))
@@ -16,5 +16,5 @@ fn render_progress(frame: &mut Frame, area:Rect, duration: &str, percent: u16){
         .label(duration)
         .percent(percent.min(100));
 
-    frame.render(gauge, area);
+    frame.render_widget(gauge, area);
 }
