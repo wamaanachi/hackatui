@@ -4,6 +4,7 @@
 // .local/share/wamaanachi/hackatui/{config files here}
 //
 
+use core::fmt;
 use dirs;
 use std::fs;
 
@@ -19,6 +20,20 @@ impl From<std::io::Error> for ConfigError {
         ConfigError::Io(value)
     }
 }
+
+impl fmt::Display for ConfigError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ConfigError::NoHomeDir => write!(f, "could not find home directory"),
+            ConfigError::NoKey => {
+                write!(f, "no api_key found in .wakatime.cfg or HACKATIME_API_KEY")
+            }
+            ConfigError::Io(e) => write!(f, "could not read config file: {e}"),
+        }
+    }
+}
+
+impl std::error::Error for ConfigError {}
 
 pub fn load_key() -> Result<String, ConfigError> {
     load_key_with(|name| std::env::var(name).ok())
