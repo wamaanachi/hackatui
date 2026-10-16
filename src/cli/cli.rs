@@ -45,6 +45,19 @@ impl CliArgs {
             return false;
         }
 
+        // Hackatime Specific Commands
+        if self.current_project {
+            return false;
+        }
+
+        if !self.leaderboard.is_empty() {
+            return false;
+        }
+
+        if !self.heartbeat.is_empty() {
+            return false;
+        }
+
         true
     }
 }
