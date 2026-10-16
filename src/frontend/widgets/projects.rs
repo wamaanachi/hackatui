@@ -9,7 +9,7 @@ use ratatui::Frame;
 
 pub fn render_fake_ahh_projects(frame: &mut Frame, area:  Rect){
     let block = Block::bordered().title("Project Durations");
-    let inner = block.inner(area)
+    let inner = block.inner(area);
 
     frame.render_widget(block, area);
 
