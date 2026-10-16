@@ -15,7 +15,7 @@ pub struct Heartbeat {
     #[serde(rename = "type")]
     pub entity_type: Option<String>,
     pub category: Option<String>,
-    pub time: u64,
+    pub time: f64,
     pub project: Option<String>,
     pub branch: Option<String>,
     pub language: Option<String>,
