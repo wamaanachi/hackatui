@@ -39,6 +39,10 @@ pub struct CliArgs {
 
 impl CliArgs {
     // checks if there is no cli args given
+
+    /// Check if no cli arguments given
+    ///
+    /// returns -> bool
     pub(crate) fn is_none(&self) -> bool {
         // Wakatime Compatible Commands
         if self.current_user || self.summary ||self.status || self.stats {
