@@ -35,6 +35,7 @@ pub struct CliArgs {
     stats: bool,
 }
 
+
 impl CliArgs {
     // checks if there is no cli args given
     pub(crate) fn is_none(&self) -> bool {
