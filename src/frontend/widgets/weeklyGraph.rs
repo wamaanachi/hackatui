@@ -1,8 +1,10 @@
 // so i got confused here for a bit so i read - https://docs.rs/ratatui/latest/ratatui/widgets/struct.BarChart.html
 // but ye ill obv change the code later to suit this
 
+use ratatui::layout::Rect;
 use ratatui::style::{Style, Stylize};
 use ratatui::widgets::{Bar, BarChart, BarGroup, Block};
+use ratatui::Frame;
 
 BarChart::default()
     .block(Block::bordered().title("WeeklyGraph"))
