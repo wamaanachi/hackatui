@@ -6,7 +6,8 @@ use ratatui::style::{Style, Stylize};
 use ratatui::widgets::{Bar, BarChart, BarGroup, Block};
 use ratatui::Frame;
 
-BarChart::default()
+pub fn render_weekly(frame: &mut Frame, area: Rect){
+let chart = BarChart::default()
     .block(Block::bordered().title("WeeklyGraph"))
     .bar_width(4) // umm idk ill change it ig dpeending on how the project looks altogether with the widgets
     .bar_gap(1)
@@ -14,4 +15,7 @@ BarChart::default()
     .bar_style(Style::new().cyan().on_blue()) // no clue how this is gonna look
     .value_style(Style::new().blue().bold())
     .label_style(Style::new().white())
-    .data(&[("Mon", 2), ("Tue", 3), ("Wed", 1), ("Thu", 1), ("Fri", 5), ("Sat", 2), ("Sun", 8)])
+    .data(&[("Mon", 2), ("Tue", 3), ("Wed", 1), ("Thu", 1), ("Fri", 5), ("Sat", 2), ("Sun", 8)]);
+
+    frame.render_widget(chart, area)
+}
