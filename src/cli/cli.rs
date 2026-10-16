@@ -1,11 +1,5 @@
 use clap::Parser;
 
-
-pub(crate) enum Leaderboard {
-    Daily = 1,
-    Week = 2
-}
-
 #[derive(Clone, Debug, Parser)]
 #[command(
     author,
