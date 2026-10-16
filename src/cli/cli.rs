@@ -1,5 +1,10 @@
 use clap::Parser;
 
+
+pub(crate) enum Leaderboard {
+    
+}
+
 #[derive(Clone, Debug, Parser)]
 #[command(
     author,
