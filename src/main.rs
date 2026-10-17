@@ -49,7 +49,13 @@ fn main() -> std::io::Result<()>{
 
                     '2' => render_progress(frame, areas[1], 150, 240),
 
-                    '3' => render_fake_ahh_projects(frame, areas[1]),
+                    '3' => {
+                        let projects = [
+                            ("hackaTui", "4h 20m", 100),
+                            ("prophesizer", "3h 00m", 67),
+                            ("lankat", "1h 30m", 33),
+                            ];
+                        render_fake_ahh_projects(frame, areas[1])},
 
                     '4' => render_weekly(frame, areas[1]),
 
