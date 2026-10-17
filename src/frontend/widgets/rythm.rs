@@ -12,24 +12,25 @@ pub fn render_rythm(frame: &mut Frame, area: Rect){
 
     let minutes = [
         0, 0, 5, 45, 35, 10, 0, 0, 25, 55, 45, 10, 40, 20, 0, 0, 20
-    ]
+    ];
 
     let mut rows = vec![];
-
-    let day in days = {
-        let mut cells = vec![Span::raw(format!("{day}"))];
+// lollll
+    for day in days {
+        let mut cells = vec![Span::raw(format!("{day}  "))];
         //bruhh
         // handwriting these examples is boring
 
-        for value on minutes {
+        for value in minutes {
         let color = if value == 0 {
-            Color::DarkGrey
+            Color::DarkGray
         }
         else if value < 30 {
-            Color::DarkPink // idk man
+            Color::Rgb(100, 45, 70)
+           //yo replacing the colo r names with rgb i got in a picker thingy cause most colors dont work lol // Color::DarkPink // idk man
         }
         else {
-            Color::Pink
+            Color::Rgb(235, 105, 145)
         };
 
         // oh yeah this part was mentioned in te docs
@@ -39,8 +40,8 @@ pub fn render_rythm(frame: &mut Frame, area: Rect){
     }
     rows.push(Line::from(cells));
 }
-    let widgets = Paragraph::new(rows)
-        .block(Block::bordered().title("The Rythm"))
+    let widget = Paragraph::new(rows)
+        .block(Block::bordered().title("The Rythm"));
 
     frame.render_widget(widget, area);
 }

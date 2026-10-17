@@ -20,6 +20,7 @@ use frontend::widgets::{
     projects::render_fake_ahh_projects,
     today::render_today,
     weeklyGraph::render_weekly,
+    rythm::render_rythm,
 };
 
 // ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
@@ -69,7 +70,9 @@ fn main() -> std::io::Result<()>{
 
                         render_pie(frame, areas[1], "Editors", editors, "Blue: Veonim | Yellow: Emacs");
                     }
-                    
+
+                    '7' => render_rythm(frame, areas[1]),
+                // i put the example data in the rythm file    
 
                     _ => {}
                 }
@@ -79,7 +82,7 @@ fn main() -> std::io::Result<()>{
                     match key.code{
                         KeyCode::Char('x') => break,
 
-                        KeyCode::Char(number @ '1'..='6') => { // lol i coundnt figure out how to loop
+                        KeyCode::Char(number @ '1'..='7') => { // lol i coundnt figure out how to loop
                             selected = number;
                         }
 
