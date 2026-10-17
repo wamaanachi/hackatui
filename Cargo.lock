@@ -551,6 +551,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "ratatui",
+ "tui-piechart",
 ]
 
 [[package]]
@@ -1587,6 +1588,15 @@ name = "time-core"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e1c906769ad99c88eaa54e728060edef082f8e358ff32030cb7c7d315e81109"
+
+[[package]]
+name = "tui-piechart"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "852c46a27659b68ebd4852c20f1e6c723235b0e7f04588527f051a19e866a856"
+dependencies = [
+ "ratatui",
+]
 
 [[package]]
 name = "typenum"
