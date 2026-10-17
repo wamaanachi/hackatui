@@ -4,3 +4,4 @@ pub mod projects;
 pub mod weeklyGraph;
 pub mod pie;
 pub mod rythm;
+pub mod project_details;
