@@ -16,5 +16,6 @@ pub fn render_progress(frame: &mut Frame, area:Rect, duration: &str, percent: u1
         .label(duration)
         .percent(percent.min(100));
 
+        let area = Rect::new(area.x, area.y, area.width, area.height.min(3));
     frame.render_widget(gauge, area);
 }

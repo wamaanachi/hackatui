@@ -58,7 +58,7 @@ fn main() -> std::io::Result<()>{
                     PieSlice::new("rust", 22.0, Color::Yellow),
                 ];
 
-                        render_pie(frame, areas[1], "Cool Languages", slices)
+                        render_pie(frame, areas[1], "Cool Languages", slices, "Blue: lath | Yellow: rust",)
                     }
 
                     _ => {}

@@ -2,6 +2,8 @@ use ratatui::layout::Rect;
 use ratatui::widgets::Block;
 use ratatui::Frame;
 use tui_piechart::{PieChart, PieSlice};
+use ratatui::layout::{Constraint, Layout};
+use ratatui::widgets::Paragraph;
 
 // umm i found this random crate online
 // if you wanna use it - https://crates.io/crates/tui-piechart
