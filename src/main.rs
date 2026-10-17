@@ -58,8 +58,18 @@ fn main() -> std::io::Result<()>{
                     PieSlice::new("rust", 22.0, Color::Yellow),
                 ];
 
-                        render_pie(frame, areas[1], "Cool Languages", slices, "Blue: lath | Yellow: rust",)
+                  render_pie(frame, areas[1], "Cool Languages", slices, "Blue: lath | Yellow: rust",)
                     }
+                        
+                    '6' => {
+                        let editors = vec![
+                            PieSlice::new("Veonim", 480.0, Color::Blue),
+                            PieSlice::new("emacs", 72.0, Color::Yellow),
+                                        ];
+
+                        render_pie(frame, areas[1], "Editors", editors, "Blue: Veonim | Yellow: Emacs");
+                    }
+                    
 
                     _ => {}
                 }
@@ -69,7 +79,7 @@ fn main() -> std::io::Result<()>{
                     match key.code{
                         KeyCode::Char('x') => break,
 
-                        KeyCode::Char(number @ '1'..='5') => { // lol i coundnt figure out how to loop
+                        KeyCode::Char(number @ '1'..='6') => { // lol i coundnt figure out how to loop
                             selected = number;
                         }
 
