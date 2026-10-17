@@ -22,6 +22,7 @@ use frontend::widgets::{
     weeklyGraph::render_weekly,
     rythm::render_rythm,
     project_details::render_project_details,
+    project_page::render_project_card,
 };
 
 // ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
@@ -82,6 +83,21 @@ fn main() -> std::io::Result<()>{
                 // i put the example data in the rythm file    
 
                     '8' => render_project_details(frame, areas[1]),
+
+                     '9' => {
+                        let projects = [
+                            ("hackatui", "8h 14m", "Hackatime in terminal", "Rust"),
+                            ("lath", "3h 42m", "Cool programming language", "Rust"),
+                            ("timetable", "7h 25m", "Timetable generator", "Javascript"),
+                        ];
+
+                        let rows = Layout::vertical(vec![Constraint::Length(8); projects.len()],
+                    ).split(areas[1]);
+
+                    for (i, (name, time, description, language)) in projects.iter().enumerate(){
+                        render_project_card(frame, rows[i], name, time, description, language,);
+                    }
+                    }
                     _ => {}
                 }
             })?;
@@ -90,7 +106,7 @@ fn main() -> std::io::Result<()>{
                     match key.code{
                         KeyCode::Char('x') => break,
 
-                        KeyCode::Char(number @ '1'..='8') => { // lol i coundnt figure out how to loop
+                        KeyCode::Char(number @ '1'..='9') => { // lol i coundnt figure out how to loop
                             selected = number;
                         }
 
