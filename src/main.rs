@@ -47,7 +47,7 @@ fn main() -> std::io::Result<()>{
                 match selected {
                     '1' => render_today(frame, areas[1], "8h 20m"),
 
-                    '2' => render_progress(frame, areas[1], "8h 20m", 67),
+                    '2' => render_progress(frame, areas[1], 150, 240),
 
                     '3' => render_fake_ahh_projects(frame, areas[1]),
 
