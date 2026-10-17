@@ -14,9 +14,9 @@ pub fn render_fake_ahh_projects(frame: &mut Frame, area:  Rect){
     frame.render_widget(block, area);
 
     let projects = [
-        ("von", "4h 20m", 100),
-        ("on", "3h 00m", 67),
-        ("n", "1h 30m", 33),
+        ("hackaTui", "4h 20m", 100),
+        ("prophesizer", "3h 00m", 67),
+        ("lankat", "1h 30m", 33),
     ];
 
     for (i, (name, duration, percent)) in projects.iter().enumerate(){
