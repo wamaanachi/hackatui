@@ -81,7 +81,7 @@ fn main() -> std::io::Result<()>{
                     '7' => render_rythm(frame, areas[1]),
                 // i put the example data in the rythm file    
 
-                    '8' => render_fake_ahh_projects(frame, areas[1]),
+                    '8' => render_project_details(frame, areas[1]),
                     _ => {}
                 }
             })?;
