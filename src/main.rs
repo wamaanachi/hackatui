@@ -55,7 +55,7 @@ fn main() -> std::io::Result<()>{
                             ("prophesizer", "3h 00m", 67),
                             ("lankat", "1h 30m", 33),
                             ];
-                        render_fake_ahh_projects(frame, areas[1])},
+                        render_fake_ahh_projects(frame, areas[1], &projects)},
 
                     '4' => render_weekly(frame, areas[1]),
 
