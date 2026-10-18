@@ -128,3 +128,17 @@ fn hacka_global_parse(args: CliArgs, widget: bool) {
     }
 }
 
+/// Routes the hackatime specific other commands to their outputs
+fn hacka_other_parse(args: CliArgs, widget: bool) {
+    if let Some(badge) = args.badge {
+        todo!(
+            "call badge processor"
+        )
+    }
+
+    if let Some(lookup) = args.lookup {
+        todo!(
+            "call lookup processor"
+        )
+    }
+}
