@@ -38,18 +38,6 @@ pub struct CliArgs {
 
     // --- HACKATIME SPECIFIC STUFF ---
 
-    /// How many people are currently hacking?
-    #[arg(
-        long = "current-project"
-    )]
-    current_project: bool,
-
-    /// Leaderboard Status
-    #[arg(
-        long = "leaderboard"
-    )]
-    leaderboard: Option<String>,
-
     /// Heartbeat Details
     #[arg(
         long = "heartbeat"
