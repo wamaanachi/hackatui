@@ -59,7 +59,8 @@ pub(crate) fn tui_stuff() {
                             ("prophesizer", "3h 00m", 67),
                             ("lankat", "1h 30m", 33),
                         ];
-                        render_fake_ahh_projects(frame, areas[1], &projects)},
+                        render_fake_ahh_projects(frame, areas[1], &projects)
+                    },
 
                     '4' => render_weekly(frame, areas[1]),
 
@@ -69,7 +70,7 @@ pub(crate) fn tui_stuff() {
                             ("rust", 4520, Color::Yellow),
                         ];
 
-                        render_pie(frame, areas[1], "Cool Languages", &slices,);
+                        render_pie(frame, areas[1], "Cool Languages", &slices, );
                     }
 
                     '6' => {
@@ -82,7 +83,7 @@ pub(crate) fn tui_stuff() {
                     }
 
                     '7' => render_rythm(frame, areas[1]),
-                    // i put the example data in the rythm file    
+                    // i put the example data in the rythm file
 
                     '8' => render_project_details(frame, areas[1]),
 
@@ -96,8 +97,8 @@ pub(crate) fn tui_stuff() {
                         let rows = Layout::vertical(vec![Constraint::Length(8); projects.len()],
                         ).split(areas[1]);
 
-                        for (i, (name, time, description, language)) in projects.iter().enumerate(){
-                            render_project_card(frame, rows[i], name, time, description, language,);
+                        for (i, (name, time, description, language)) in projects.iter().enumerate() {
+                            render_project_card(frame, rows[i], name, time, description, language, );
                         }
                     }
 
@@ -108,8 +109,8 @@ pub(crate) fn tui_stuff() {
                 }
             })?;
             if let Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press{
-                    match key.code{
+                if key.kind == KeyEventKind::Press {
+                    match key.code {
                         KeyCode::Char('x') => break,
 
                         KeyCode::Char(number @ '1'..='9') => { // lol i coundnt figure out how to loop
@@ -123,7 +124,7 @@ pub(crate) fn tui_stuff() {
                         KeyCode::Char('t') => {
                             selected = 't';
                         }
-                        _=> {}
+                        _ => {}
                     }
                 }
             }
