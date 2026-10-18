@@ -10,6 +10,37 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
     let active_days = [3, 5, 6, 7, 12, 16, 17, 18, 19];
     // just some random days 
 
+    let today = 18;
+
+    let mut streak = 0;
+    let mut longest = 0;
+    let mut active_count = 0;
+
+    for day in 1..=today {
+        if active_days.contains(&day){
+    streak +=1;
+    active_count +=1;
+
+    if streak > longest {
+        longest = streak;
+    }
+        }
+        else {
+            streak = 0;
+        }
+    }
+
+    let mut current = 0;
+    let mut day = today;
+
+    if !active_days.contains(&day){
+        day -= 1;
+    }
+
+    while day > 0 && active_days.contains(&day){
+        current += 1;
+        day -= 1;
+    }
     let mut rows = vec![
         Line::from("Mon Tue Wed Thu Fri Sat Sun"),
     ];
@@ -23,7 +54,7 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
     }
 
     for day in 1..=31 {
-        let color = if active_days.contains(&day){
+        let color = if day <= today && active_days.contains(&day){
             Color::Magenta
         }
         else {
@@ -45,6 +76,11 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
 if !cells.is_empty(){
     rows.push(Line::from(cells));
 }
+
+rows.push(Line::from(""));
+rows.push(Line::from(format!("Current streak: {current} days")));
+rows.push(Line::from(format!("Longest streak: {longest} days")));
+rows.push(Line::from(format!("Active days: {active_count}")));
 
 let calender = Paragraph::new(rows)
     .block(Block::bordered().title("October Activity"));
