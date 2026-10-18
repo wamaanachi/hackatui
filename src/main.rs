@@ -10,7 +10,6 @@ use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 // yep we'll def need to change this file later
 use ratatui::layout::{Constraint, Layout};
 use ratatui::style::Color;
-use tui_piechart::PieSlice;
 use ratatui::widgets::Paragraph;
 use frontend::widgets::message::render_message;
 
@@ -71,21 +70,21 @@ fn main() -> std::io::Result<()>{
                     '4' => render_weekly(frame, areas[1]),
 
                     '5' => {
-                let slices = vec![
-                    PieSlice::new("lath", 42.0, Color::Blue), // lets see of this works
-                    PieSlice::new("rust", 22.0, Color::Yellow),
+                let slices = [
+                    ("lath", 3680, Color::Blue), // lets see of this works
+                    ("rust", 4520, Color::Yellow),
                 ];
 
-                  render_pie(frame, areas[1], "Cool Languages", slices, "Blue: lath | Yellow: rust",)
+                  render_pie(frame, areas[1], "Cool Languages", &slices,);
                     }
                         
                     '6' => {
-                        let editors = vec![
-                            PieSlice::new("Veonim", 480.0, Color::Blue),
-                            PieSlice::new("emacs", 72.0, Color::Yellow),
-                                        ];
+                        let editors = [
+                            ("Veonim", 78930, Color::Blue),
+                            ("emacs", 58740, Color::Yellow),
+                        ];
 
-                        render_pie(frame, areas[1], "Editors", editors, "Blue: Veonim | Yellow: Emacs");
+                        render_pie(frame, areas[1], "Editors", &editors);
                     }
 
                     '7' => render_rythm(frame, areas[1]),

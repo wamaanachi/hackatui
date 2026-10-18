@@ -10,7 +10,7 @@ pub fn render_summary(frame: &mut Frame, area: Rect, values: [&str; 6],){
         "Total Time", "Top Project", "Top Language", "Top OS", "Top Editor", "Top Category",
     ];
 
-    let area = Rect::new(area.x, area.y, area,width, area.height.min(3));
+    let area = Rect::new(area.x, area.y, area.width, area.height.min(3));
     // it looked very weid beefore i wrote this lol
 
     let cards = Layout::horizontal([
