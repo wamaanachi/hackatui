@@ -95,17 +95,44 @@ pub struct StatsResponse {
 
 #[derive(Debug, Deserialize)]
 pub struct DashboardSummary {
-    pub total_seconds: u64,
+    pub total_seconds: f64,
     pub streak: u64,
-    pub top_project: Option<String>,
-    pub top_language: Option<String>,
-    pub top_editor: Option<String>,
-    pub top_os: Option<String>,
-    pub projects: Vec<(String, u64)>,
-    pub languages: Vec<(String, u64)>,
-    pub editors: Vec<(String, u64)>,
-    pub operating_systems: Vec<(String, u64)>,
+    pub projects: Vec<Share>,
+    pub languages: Vec<Share>,
+    pub editors: Vec<Share>,
+    pub operating_systems: Vec<Share>,
     pub missing_os_seconds: f64,
+}
+
+impl DashboardSummary {
+    pub fn from_parts(
+        stats: &Data,
+        editors: Vec<Share>,
+        operating_systems: Vec<Share>,
+        missing_os_seconds: f64,
+    ) -> Self {
+        DashboardSummary {
+            total_seconds: stats.total_seconds as f64,
+            streak: stats.streak,
+            projects: to_shares_from_stats(stats.projects.as_deref()),
+            languages: to_shares_from_stats(stats.languages.as_deref()),
+            editors,
+            operating_systems,
+            missing_os_seconds,
+        }
+    }
+}
+
+pub fn to_shares_from_stats(items: Option<&[Stats]>) -> Vec<Share> {
+    items
+        .unwrap_or(&[])
+        .iter()
+        .map(|s| Share {
+            name: s.name.clone(),
+            total_seconds: s.total_seconds as f64,
+            percent: s.percent,
+        })
+        .collect()
 }
 #[derive(Debug, Deserialize)]
 pub struct Share {
@@ -116,7 +143,7 @@ pub struct Share {
 
 #[cfg(test)]
 mod test {
-    use crate::api::models::StatsResponse;
+    use crate::api::models::{DashboardSummary, Data, StatsResponse};
 
     #[test]
     fn parses_real_stats_response() {
@@ -124,5 +151,24 @@ mod test {
         let parsed: StatsResponse =
             serde_json::from_str(sample).unwrap_or_else(|e| panic!("parse failed: {e}"));
         assert!(parsed.data.total_seconds > 0);
+    }
+
+    #[test]
+    fn from_parts_handles_missing_lists() {
+        let stats = Data {
+            total_seconds: 3600,
+            daily_average: 0,
+            languages: None,
+            projects: None,
+            editors: None,
+            streak: 1,
+            unique_total_seconds: None,
+        };
+
+        let summary = DashboardSummary::from_parts(&stats, vec![], vec![], 0.0);
+
+        assert_eq!(summary.total_seconds, 3600.0);
+        assert_eq!(summary.streak, 1);
+        assert!(summary.projects.is_empty());
     }
 }
