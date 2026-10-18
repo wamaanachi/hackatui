@@ -25,6 +25,7 @@ use frontend::widgets::{
     project_page::render_project_card,
     calender::render_calender,
     summary::render_summary,
+    timeline::render_timeline,
 };
 
 // ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
@@ -108,6 +109,8 @@ fn main() -> std::io::Result<()>{
                     }
 
                     '0' => render_calender(frame, areas[1]),
+
+                    't' => render_timeline(frame, areas[1]),
                     _ => {}
                 }
             })?;
@@ -122,6 +125,10 @@ fn main() -> std::io::Result<()>{
 
                         KeyCode::Char('0') => {
                             selected = '0';
+                        }
+
+                        KeyCode::Char('t') => {
+                            selected = 't';
                         }
                         _=> {}
                     }
