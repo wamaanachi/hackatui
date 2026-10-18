@@ -3,8 +3,6 @@ pub mod frontend;
 pub mod api;
 pub mod config;
 
-// so writing a tiny script to test it out 
-// maybe change or delete this later
 
 use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 // yep we'll def need to change this file later
@@ -27,8 +25,24 @@ use frontend::widgets::{
     calender::render_calender,
 };
 
-// ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
-fn main() -> std::io::Result<()>{
+
+use clap::Parser;
+use crate::cli::cli::CliArgs;
+
+
+fn main() {
+    let args: CliArgs = CliArgs::parse();
+
+    // I mage it so that the tui stuff only runs when no cli args passed
+    if !args.is_empty() {
+        // todo!(
+        //     "Call the cli parser, then sys.exit()"
+        // )
+      
+        // (just ignores it for now)
+        let ignore: bool = true
+    }
+    
     let mut terminal = ratatui::init();
 
     let seconds: u64 = 9000;
