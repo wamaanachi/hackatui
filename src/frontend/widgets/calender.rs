@@ -90,15 +90,22 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
         // you know what, i might change it so the shade of color depends on the exact time you coded
         // instead making a threshold for color 
         // oh yeah that'd so ccol ill def do it
+        // done btw
+
         let color = if day > today || minutes == 0 {
             Color::DarkGray
-        } 
-        else if minutes < 60 {
-            Color::Rgb(100, 45, 70)
         }
         else {
-            Color::Rgb(235, 100, 145)
+            let shade = minutes.min(240) as f64 / 240.0;
+
+            // some weird color code
+            let red = (100.0 + 135.0 * shade) as u8;
+            let green = (45.0 + 55.0 * shade) as u8;
+            let blue = (70.0 + 75.0 * shade) as u8;
+
+            Color::Rgb(red, green, blue)
         };
+
 
         // yep will ddefinately change thos hardcoded rgbs
         cells.push(Span::styled(
