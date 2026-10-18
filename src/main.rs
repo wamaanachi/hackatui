@@ -8,7 +8,6 @@ use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 // yep we'll def need to change this file later
 use ratatui::layout::{Constraint, Layout};
 use ratatui::style::Color;
-use tui_piechart::PieSlice;
 use ratatui::widgets::Paragraph;
 use frontend::widgets::message::render_message;
 
@@ -23,6 +22,8 @@ use frontend::widgets::{
     project_details::render_project_details,
     project_page::render_project_card,
     calender::render_calender,
+    summary::render_summary,
+    timeline::render_timeline,
 };
 
 
@@ -51,21 +52,23 @@ fn main() {
     let result = || -> std::io::Result<()>{
         loop {
             terminal.draw(|frame| {
-                // umm yea this code shouldnt be in main lol
+        // umm yea this code shouldnt be in main lol
                 let areas = Layout::vertical([
                     Constraint::Length(2),
                     Constraint::Min(0),
                 ])
-                    .split(frame.area());
-
+                .split(frame.area());
+                
                 let menu = Paragraph::new(
-                    "1 Today | 2 Progress | 3 Projects | 4 Weekly | 5 Pie | q Exit",
+                "1 Today | 2 Progress | 3 Projects | 4 Weekly | 5 Pie | q Exit",
                 );
 
                 frame.render_widget(menu, areas[0]);
 
                 match selected {
-                    '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+                    // '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+
+                    '1' => render_summary(frame, areas[1], ["6872h 42m", "hackatui", "rust", "Linux", "Neovim", "Coding"]),
 
                     '2' => render_progress(frame, areas[1], minutes, 240),
 
@@ -74,36 +77,35 @@ fn main() {
                             ("hackaTui", "4h 20m", 100),
                             ("prophesizer", "3h 00m", 67),
                             ("lankat", "1h 30m", 33),
-                        ];
-                        render_fake_ahh_projects(frame, areas[1], &projects)
-                    },
+                            ];
+                        render_fake_ahh_projects(frame, areas[1], &projects)},
 
                     '4' => render_weekly(frame, areas[1]),
 
                     '5' => {
-                        let slices = vec![
-                            PieSlice::new("lath", 42.0, Color::Blue), // lets see of this works
-                            PieSlice::new("rust", 22.0, Color::Yellow),
-                        ];
+                let slices = [
+                    ("lath", 3680, Color::Blue), // lets see of this works
+                    ("rust", 4520, Color::Yellow),
+                ];
 
-                        render_pie(frame, areas[1], "Cool Languages", slices, "Blue: lath | Yellow: rust", )
+                  render_pie(frame, areas[1], "Cool Languages", &slices,);
                     }
-
+                        
                     '6' => {
-                        let editors = vec![
-                            PieSlice::new("Veonim", 480.0, Color::Blue),
-                            PieSlice::new("emacs", 72.0, Color::Yellow),
+                        let editors = [
+                            ("Veonim", 78930, Color::Blue),
+                            ("emacs", 58740, Color::Yellow),
                         ];
 
-                        render_pie(frame, areas[1], "Editors", editors, "Blue: Veonim | Yellow: Emacs");
+                        render_pie(frame, areas[1], "Editors", &editors);
                     }
 
                     '7' => render_rythm(frame, areas[1]),
-                    // i put the example data in the rythm file
+                // i put the example data in the rythm file    
 
                     '8' => render_project_details(frame, areas[1]),
 
-                    '9' => {
+                     '9' => {
                         let projects = [
                             ("hackatui", "8h 14m", "Hackatime in terminal", "Rust"),
                             ("lath", "3h 42m", "Cool programming language", "Rust"),
@@ -111,20 +113,22 @@ fn main() {
                         ];
 
                         let rows = Layout::vertical(vec![Constraint::Length(8); projects.len()],
-                        ).split(areas[1]);
+                    ).split(areas[1]);
 
-                        for (i, (name, time, description, language)) in projects.iter().enumerate() {
-                            render_project_card(frame, rows[i], name, time, description, language, );
-                        }
+                    for (i, (name, time, description, language)) in projects.iter().enumerate(){
+                        render_project_card(frame, rows[i], name, time, description, language,);
+                    }
                     }
 
                     '0' => render_calender(frame, areas[1]),
+
+                    't' => render_timeline(frame, areas[1]),
                     _ => {}
                 }
             })?;
             if let Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press {
-                    match key.code {
+                if key.kind == KeyEventKind::Press{
+                    match key.code{
                         KeyCode::Char('x') => break,
 
                         KeyCode::Char(number @ '1'..='9') => { // lol i coundnt figure out how to loop
@@ -134,7 +138,11 @@ fn main() {
                         KeyCode::Char('0') => {
                             selected = '0';
                         }
-                        _ => {}
+
+                        KeyCode::Char('t') => {
+                            selected = 't';
+                        }
+                        _=> {}
                     }
                 }
             }
