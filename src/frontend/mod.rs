@@ -20,8 +20,6 @@ use crate::frontend::widgets::{
     weeklyGraph::render_weekly,
 };
 
-pub mod widgets;
-
 pub(crate) fn tui_stuff() {
     let mut terminal = ratatui::init();
 
