@@ -18,7 +18,7 @@ fn main() {
         // parse(args);
 
         // (just ignores it for now)
-        let ignore: bool = true;
+        let _ignore: bool = true;
     } else {
         tui_stuff()
     }

@@ -27,7 +27,7 @@ pub(crate) fn tui_stuff() {
 
     let seconds: u64 = 9000;
     let minutes = seconds / 60;
-    let time = format!("{}h {}m", minutes / 60, minutes % 60);
+    let _time = format!("{}h {}m", minutes / 60, minutes % 60);
     let mut selected = '1';
 
     let result = || -> std::io::Result<()>{
