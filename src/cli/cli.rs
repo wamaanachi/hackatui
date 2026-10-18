@@ -96,6 +96,14 @@ pub struct CliArgs {
         long = "badge"
     )]
     badge: Option<String>,
+
+    /// Lookup user
+    ///
+    /// Usage: --lookup [SLACK_ID / EMAIL]
+    #[arg(
+        long = "lookup"
+    )]
+    lookup: Option<String>,
 }
 
 
