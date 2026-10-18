@@ -1,5 +1,7 @@
 // this module is for the frontend
 
+pub mod widgets;
+
 use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 // yep we'll def need to change this file later
 use ratatui::layout::{Constraint, Layout};
