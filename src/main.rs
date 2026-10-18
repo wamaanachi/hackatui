@@ -35,9 +35,7 @@ fn main() {
 
     // I made it so that the tui stuff only runs when no cli args passed
     if !args.is_empty() {
-        // todo!(
-        //     "Call the cli parser, then sys.exit()"
-        // )
+        // parse(args);
 
         // (just ignores it for now)
         let ignore: bool = true;
