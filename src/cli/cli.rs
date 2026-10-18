@@ -99,7 +99,7 @@ pub struct CliArgs {
 
     /// Lookup user
     ///
-    /// Usage: --lookup [SLACK_ID / EMAIL]
+    /// Usage: --lookup [SLACK_ID / EMAIL] (details)
     #[arg(
         long = "lookup"
     )]
