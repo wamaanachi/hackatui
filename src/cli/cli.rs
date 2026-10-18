@@ -75,11 +75,11 @@ impl CliArgs {
             return false;
         }
 
-        if !self.leaderboard.is_none() {
+        if self.leaderboard.is_some() {
             return false;
         }
 
-        if !self.heartbeat.is_none() {
+        if self.heartbeat.is_some() {
             return false;
         }
 
