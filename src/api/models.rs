@@ -80,15 +80,28 @@ pub struct Stats {
 pub struct Data {
     pub total_seconds: u64,
     pub daily_average: u64,
-    pub languages: Vec<Stats>,
-    pub projects: Vec<Stats>,
-    pub editors: Vec<Stats>,
+    pub languages: Option<Vec<Stats>>,
+    pub projects: Option<Vec<Stats>>,
+    pub editors: Option<Vec<Stats>>,
     pub streak: u64,
-    pub unique_total_seconds: u64,
+    pub unique_total_seconds: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct StatsResponse {
     pub data: Data,
     pub trust_factor: TrustFactor,
+}
+
+#[cfg(test)]
+mod test {
+    use crate::api::models::StatsResponse;
+
+    #[test]
+    fn parses_real_stats_response() {
+        let sample = include_str!("fixtures/stats.json");
+        let parsed: StatsResponse =
+            serde_json::from_str(sample).unwrap_or_else(|e| panic!("parse failed: {e}"));
+        assert!(parsed.data.total_seconds > 0);
+    }
 }
