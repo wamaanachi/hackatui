@@ -8,7 +8,6 @@ use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 // yep we'll def need to change this file later
 use ratatui::layout::{Constraint, Layout};
 use ratatui::style::Color;
-use tui_piechart::PieSlice;
 use ratatui::widgets::Paragraph;
 use frontend::widgets::message::render_message;
 
@@ -23,6 +22,8 @@ use frontend::widgets::{
     project_details::render_project_details,
     project_page::render_project_card,
     calender::render_calender,
+    summary::render_summary,
+    timeline::render_timeline,
 };
 
 
@@ -67,7 +68,9 @@ fn main() {
                 frame.render_widget(menu, areas[0]);
 
                 match selected {
-                    '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+                    // '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+
+                    '1' => render_summary(frame, areas[1], ["6872h 42m", "hackatui", "rust", "Linux", "Neovim", "Coding"]),
 
                     '2' => render_progress(frame, areas[1], minutes, 240),
 
@@ -82,21 +85,21 @@ fn main() {
                     '4' => render_weekly(frame, areas[1]),
 
                     '5' => {
-                let slices = vec![
-                    PieSlice::new("lath", 42.0, Color::Blue), // lets see of this works
-                    PieSlice::new("rust", 22.0, Color::Yellow),
+                let slices = [
+                    ("lath", 3680, Color::Blue), // lets see of this works
+                    ("rust", 4520, Color::Yellow),
                 ];
 
-                  render_pie(frame, areas[1], "Cool Languages", slices, "Blue: lath | Yellow: rust",)
+                  render_pie(frame, areas[1], "Cool Languages", &slices,);
                     }
                         
                     '6' => {
-                        let editors = vec![
-                            PieSlice::new("Veonim", 480.0, Color::Blue),
-                            PieSlice::new("emacs", 72.0, Color::Yellow),
-                                        ];
+                        let editors = [
+                            ("Veonim", 78930, Color::Blue),
+                            ("emacs", 58740, Color::Yellow),
+                        ];
 
-                        render_pie(frame, areas[1], "Editors", editors, "Blue: Veonim | Yellow: Emacs");
+                        render_pie(frame, areas[1], "Editors", &editors);
                     }
 
                     '7' => render_rythm(frame, areas[1]),
@@ -120,6 +123,8 @@ fn main() {
                     }
 
                     '0' => render_calender(frame, areas[1]),
+
+                    't' => render_timeline(frame, areas[1]),
                     _ => {}
                 }
             })?;
@@ -134,6 +139,10 @@ fn main() {
 
                         KeyCode::Char('0') => {
                             selected = '0';
+                        }
+
+                        KeyCode::Char('t') => {
+                            selected = 't';
                         }
                         _=> {}
                     }
