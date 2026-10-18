@@ -7,8 +7,32 @@ use ratatui::Frame;
 // yo from now on you might see a million typos in the file becauwe mmy new k3 keyboard just arrived (its so good!!11!)
 // but ill fix them in the next commit.
 pub fn render_calender(frame: &mut Frame, area: Rect){
-    let active_days = [3, 5, 6, 7, 12, 16, 17, 18, 19];
+
+    // im gonna change it so colors would change depending on the time you codded that day 
+    
+    let activity = [
+        (3, 10),
+        (5, 210),
+        (6, 20),
+        (7, 410),
+        (10, 25),
+        (12, 80),
+        (14, 30),
+        (16, 42),
+        (18, 140),
+        (20, 240),
+        (23, 150),
+        (28, 88),
+    ];
     // just some random days 
+
+    let mut active_days = vec![];
+
+    for (day, minutes) in activity {
+        if minutes > 0 {
+            active_days.push(day);
+        }
+    }
 
     let today = 18;
 
@@ -54,13 +78,29 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
     }
 
     for day in 1..=31 {
-        let color = if day <= today && active_days.contains(&day){
-            Color::Magenta
+
+        let mut minutes = 0;
+
+        for (date, total) in activity {
+            if date == day {
+                minutes = total;
+            }
+        }
+
+        // you know what, i might change it so the shade of color depends on the exact time you coded
+        // instead making a threshold for color 
+        // oh yeah that'd so ccol ill def do it
+        let color = if day > today || minutes == 0 {
+            Color::DarkGray
+        } 
+        else if minutes < 60 {
+            Color::Rgb(100, 45, 70)
         }
         else {
-            Color::DarkGray
+            Color::Rgb(235, 100, 145)
         };
 
+        // yep will ddefinately change thos hardcoded rgbs
         cells.push(Span::styled(
             format!("{day:>3} "),
             Style::default().fg(color),
