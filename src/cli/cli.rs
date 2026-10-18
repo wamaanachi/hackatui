@@ -102,7 +102,7 @@ impl CliArgs {
     /// Check if no cli arguments given
     ///
     /// returns -> bool
-    pub(crate) fn is_none(&self) -> bool {
+    pub(crate) fn is_empty(&self) -> bool {
         // Wakatime Compatible Commands
         if self.current_user || self.summary || self.status || self.stats {
             return false;
