@@ -38,7 +38,7 @@ pub struct CliArgs {
 
     // --- HACKATIME SPECIFIC STUFF ---
 
-    /// What are you currently hacking?
+    /// How many people are currently hacking?
     #[arg(
         long = "current-project"
     )]
