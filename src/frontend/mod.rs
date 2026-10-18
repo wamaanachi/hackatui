@@ -21,3 +21,116 @@ use crate::frontend::widgets::{
 };
 
 pub mod widgets;
+
+pub(crate) fn tui_stuff() {
+    let mut terminal = ratatui::init();
+
+    let seconds: u64 = 9000;
+    let minutes = seconds / 60;
+    let time = format!("{}h {}m", minutes / 60, minutes % 60);
+    let mut selected = '1';
+
+    let result = || -> std::io::Result<()>{
+        loop {
+            terminal.draw(|frame| {
+                // umm yea this code shouldnt be in main lol
+                let areas = Layout::vertical([
+                    Constraint::Length(2),
+                    Constraint::Min(0),
+                ])
+                    .split(frame.area());
+
+                let menu = Paragraph::new(
+                    "1 Today | 2 Progress | 3 Projects | 4 Weekly | 5 Pie | q Exit",
+                );
+
+                frame.render_widget(menu, areas[0]);
+
+                match selected {
+                    // '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+
+                    '1' => render_summary(frame, areas[1], ["6872h 42m", "hackatui", "rust", "Linux", "Neovim", "Coding"]),
+
+                    '2' => render_progress(frame, areas[1], minutes, 240),
+
+                    '3' => {
+                        let projects = [
+                            ("hackaTui", "4h 20m", 100),
+                            ("prophesizer", "3h 00m", 67),
+                            ("lankat", "1h 30m", 33),
+                        ];
+                        render_fake_ahh_projects(frame, areas[1], &projects)},
+
+                    '4' => render_weekly(frame, areas[1]),
+
+                    '5' => {
+                        let slices = [
+                            ("lath", 3680, Color::Blue), // lets see of this works
+                            ("rust", 4520, Color::Yellow),
+                        ];
+
+                        render_pie(frame, areas[1], "Cool Languages", &slices,);
+                    }
+
+                    '6' => {
+                        let editors = [
+                            ("Veonim", 78930, Color::Blue),
+                            ("emacs", 58740, Color::Yellow),
+                        ];
+
+                        render_pie(frame, areas[1], "Editors", &editors);
+                    }
+
+                    '7' => render_rythm(frame, areas[1]),
+                    // i put the example data in the rythm file    
+
+                    '8' => render_project_details(frame, areas[1]),
+
+                    '9' => {
+                        let projects = [
+                            ("hackatui", "8h 14m", "Hackatime in terminal", "Rust"),
+                            ("lath", "3h 42m", "Cool programming language", "Rust"),
+                            ("timetable", "7h 25m", "Timetable generator", "Javascript"),
+                        ];
+
+                        let rows = Layout::vertical(vec![Constraint::Length(8); projects.len()],
+                        ).split(areas[1]);
+
+                        for (i, (name, time, description, language)) in projects.iter().enumerate(){
+                            render_project_card(frame, rows[i], name, time, description, language,);
+                        }
+                    }
+
+                    '0' => render_calender(frame, areas[1]),
+
+                    't' => render_timeline(frame, areas[1]),
+                    _ => {}
+                }
+            })?;
+            if let Event::Key(key) = event::read()? {
+                if key.kind == KeyEventKind::Press{
+                    match key.code{
+                        KeyCode::Char('x') => break,
+
+                        KeyCode::Char(number @ '1'..='9') => { // lol i coundnt figure out how to loop
+                            selected = number;
+                        }
+
+                        KeyCode::Char('0') => {
+                            selected = '0';
+                        }
+
+                        KeyCode::Char('t') => {
+                            selected = 't';
+                        }
+                        _=> {}
+                    }
+                }
+            }
+        }
+        Ok(())
+    }();
+
+    ratatui::restore();
+    result.expect("picnicing");
+}
