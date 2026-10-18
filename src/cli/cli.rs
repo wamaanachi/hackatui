@@ -104,7 +104,7 @@ impl CliArgs {
     /// returns -> bool
     pub(crate) fn is_empty(&self) -> bool {
         // Wakatime Compatible Commands
-        if self.current_user || self.summary || self.status || self.stats {
+        if self.current_user || self.summary || self.status || self.waka_stats {
             return false;
         }
 
