@@ -2,7 +2,7 @@
 
 [![hackatui](https://img.shields.io/badge/GitHub-hackatui-green?style=plastic)](https://github.com/wamaanachi/hackatui)
 
-> for all your prophesizing dreams
+> for all your hackatiming dreams
 
 ---
 
