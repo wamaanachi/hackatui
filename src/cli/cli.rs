@@ -111,6 +111,13 @@ pub struct CliArgs {
         long = "lookup"
     )]
     lookup: Option<String>,
+
+
+    // --- HACKATUI SPECIFIC STUFF ---
+    #[arg(
+        long = "no-widget"
+    )]
+    no_widget: bool,
 }
 
 
