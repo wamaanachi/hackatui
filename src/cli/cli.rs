@@ -49,10 +49,17 @@ pub struct CliArgs {
     )]
     heartbeat: Option<String>,
 
+    /// Gives u stats
     #[arg(
         long = "stats"
     )]
     stats: bool,
+
+    /// Gives details of your projects
+    #[arg(
+        long = "project-details"
+    )]
+    project_details: Option<String>,
 
 
 
