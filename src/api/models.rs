@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 pub struct HeartbeatResponse {
@@ -93,7 +93,7 @@ pub struct StatsResponse {
     pub trust_factor: TrustFactor,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct DashboardSummary {
     pub total_seconds: f64,
     pub streak: u64,
@@ -134,7 +134,7 @@ pub fn to_shares_from_stats(items: Option<&[Stats]>) -> Vec<Share> {
         })
         .collect()
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct Share {
     pub name: String,
     pub total_seconds: f64,
