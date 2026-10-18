@@ -31,6 +31,8 @@ use clap::Parser;
 use crate::cli::cli::CliArgs;
 use crate::cli::parse;
 
+use crate::frontend::tui_stuff;
+
 fn main() {
     let args: CliArgs = CliArgs::parse();
 
