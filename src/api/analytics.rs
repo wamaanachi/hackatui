@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::api::models::Heartbeat;
+use crate::api::models::{Heartbeat, Share};
 
 const MAX_GAP_SECS: f64 = 120.0;
 
@@ -50,6 +50,23 @@ where
     sorted.sort_by(|a, b| b.1.cmp(&a.1));
 
     (sorted, missing)
+}
+
+pub fn to_shares(items: &[(String, f64)]) -> Vec<Share> {
+    let total: f64 = items.iter().map(|(_, secs)| *secs).sum();
+
+    items
+        .iter()
+        .map(|(name, secs)| Share {
+            name: name.clone(),
+            total_seconds: *secs,
+            percent: if total > 0.0 {
+                *secs / total * 100.0
+            } else {
+                0.0
+            },
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -113,5 +130,21 @@ mod test {
         assert_eq!(counts[0], ("neovim".to_string(), 2));
         assert_eq!(counts[1], ("vscode".to_string(), 1));
         assert_eq!(missing, 1);
+    }
+
+    #[test]
+    fn to_shares_computes_percent() {
+        let items = vec![("neovim".to_string(), 120.0), ("vscode".to_string(), 120.0)];
+
+        let shares = to_shares(&items);
+
+        assert_eq!(shares.len(), 2);
+        assert_eq!(shares[0].percent, 50.0);
+        assert_eq!(shares[1].percent, 50.0);
+    }
+
+    #[test]
+    fn to_shares_handles_empty() {
+        assert!(to_shares(&[]).is_empty());
     }
 }

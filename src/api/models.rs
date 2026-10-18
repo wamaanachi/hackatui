@@ -105,7 +105,7 @@ pub struct DashboardSummary {
     pub languages: Vec<(String, u64)>,
     pub editors: Vec<(String, u64)>,
     pub operating_systems: Vec<(String, u64)>,
-    pub heartbeats_without_os: u64,
+    pub missing_os_seconds: f64,
 }
 #[derive(Debug, Deserialize)]
 pub struct Share {
