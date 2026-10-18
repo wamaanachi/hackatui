@@ -55,6 +55,44 @@ pub struct CliArgs {
         long = "heartbeat"
     )]
     heartbeat: Option<String>,
+
+    #[arg(
+        long = "stats"
+    )]
+    stats: bool,
+
+    // -- Global Hackatime Stuff --
+
+    /// How many people are currently hacking?
+    #[arg(
+        long = "current-project"
+    )]
+    current_project: bool,
+
+    /// Leaderboard Status
+    #[arg(
+        long = "leaderboard"
+    )]
+    leaderboard: Option<String>,
+
+    /// How many banned users?
+    #[arg(
+        long = "banned"
+    )]
+    banned: bool,
+
+    /// Trust value of user
+    #[arg(
+        long = "trust-value",
+        default_value = "self"
+    )]
+    trust_value: Option<String>,
+
+    // --- OTHERS ---
+    #[arg(
+        long = "badge"
+    )]
+    badge: Option<String>,
 }
 
 
