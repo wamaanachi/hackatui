@@ -28,7 +28,7 @@ use frontend::widgets::{
 
 use clap::Parser;
 use crate::cli::cli::CliArgs;
-
+use crate::cli::parse;
 
 fn main() {
     let args: CliArgs = CliArgs::parse();
