@@ -2,15 +2,51 @@
 
 //Let's get started with fetching some basic info first.
 //
-
-use std::{collections::HashMap, error::Error};
+pub mod analytics;
+use std::error::Error;
 
 use reqwest::StatusCode;
 
-use crate::api::models::{Heartbeat, HeartbeatResponse, StatsResponse};
+use crate::api::{
+    analytics::{time_by, to_shares},
+    models::{DashboardSummary, HeartbeatResponse, StatsResponse},
+};
 
 pub mod models;
+const TEN_YEARS_AGO: &str = "2016-10-18T00:00:00Z";
 const BASE_URL: &str = "https://hackatime.hackclub.com";
+
+///Fetches everything the dashboard needs in one call.
+///
+///`start` and `end` are dates like `"2026-10-05"`. `None` for `start`
+///means ten years back; `None` and `end` means today.
+///
+///Totals, projects, languages, and streak come from the server's stats.
+///Editor and OS are estimated from raw heartbeats, each gap between consecutive
+///heartbeats counts for earlier one, capped at 2 minutes. Gaps with no editor or OS
+///are summed separately as `missing_os_seconds`
+///
+///THIS IS VERY VERY SLOW with long ranges, so use small windows for all time and stuff
+pub async fn fetch_dashboard(
+    key: &str,
+    start: Option<&str>,
+    end: Option<&str>,
+) -> Result<DashboardSummary, Box<dyn Error>> {
+    let start = start.unwrap_or(TEN_YEARS_AGO);
+
+    let stats = fetch_stats(key, Some(start), end).await?;
+    let heartbeats = fetch_heartbeats(key, start, end).await?;
+
+    let (editor_times, _) = time_by(&heartbeats.heartbeats, |h| h.editor.as_deref());
+    let (os_times, missing_os) = time_by(&heartbeats.heartbeats, |h| h.operating_system.as_deref());
+
+    Ok(DashboardSummary::from_parts(
+        &stats.data,
+        to_shares(&editor_times),
+        to_shares(&os_times),
+        missing_os,
+    ))
+}
 
 pub fn parse_heartbeats(json_str: &str) -> Result<HeartbeatResponse, serde_json::Error> {
     serde_json::from_str(json_str)
@@ -19,16 +55,20 @@ pub fn parse_heartbeats(json_str: &str) -> Result<HeartbeatResponse, serde_json:
 pub async fn fetch_heartbeats(
     key: &str,
     start: &str,
-    end: &str,
+    end: Option<&str>,
 ) -> Result<HeartbeatResponse, Box<dyn Error>> {
     let url = format!("{BASE_URL}/api/v1/my/heartbeats");
 
+    let mut query = vec![("start_time", start)];
+    if let Some(end) = end {
+        query.push(("end_time", end));
+    }
     //curl 'https://hackatime.hackclub.com/api/v1/my/heartbeats?start_time=&end_time=' \
     // --header 'Authorization: Bearer YOUR_SECRET_TOKEN'
     let resp = reqwest::Client::new()
         .get(&url)
         .bearer_auth(key)
-        .query(&[("start_time", start), ("end_time", end)])
+        .query(&query)
         .send()
         .await?;
 
@@ -65,25 +105,6 @@ pub async fn fetch_stats(
         .await?;
 
     Ok(resp.json::<StatsResponse>().await?)
-}
-
-pub fn count_os(hbs: &[Heartbeat]) -> (Vec<(String, u64)>, u64) {
-    let mut counts: HashMap<String, u64> = HashMap::new();
-    let mut missing = 0;
-    for hb in hbs {
-        match &hb.operating_system {
-            Some(raw) => {
-                let name = raw.to_lowercase();
-                *counts.entry(name).or_insert(0) += 1;
-            }
-            None => missing += 1,
-        }
-    }
-
-    let mut sorted: Vec<(String, u64)> = counts.into_iter().collect();
-    sorted.sort_by(|a, b| b.1.cmp(&a.1));
-
-    (sorted, missing)
 }
 
 #[cfg(test)]
@@ -148,7 +169,18 @@ mod test {
     #[ignore]
     async fn live_fetch_works() {
         let key = crate::config::load_key().expect("Failed to load the key for live test");
-        let res = fetch_heartbeats(&key, "2026-03-20T00:00:00Z", "2026-03-20T23:59:59Z").await;
+        let res =
+            fetch_heartbeats(&key, "2026-10-05T00:00:00Z", Some("2026-10-11T23:59:59Z")).await;
         assert!(res.is_ok(), "Live fetch error: {:?}", res.err());
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn live_dashboard_works() {
+        let key = crate::config::load_key().expect("No API Key");
+        let d = fetch_dashboard(&key, Some("2026-10-05"), Some("2026-10-11"))
+            .await
+            .expect("dashboard failed");
+        assert!(d.total_seconds > 0.0);
     }
 }
