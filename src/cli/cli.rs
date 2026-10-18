@@ -36,6 +36,11 @@ pub struct CliArgs {
     )]
     waka_stats: bool,
 
+
+
+
+
+
     // --- HACKATIME SPECIFIC STUFF ---
 
     /// Heartbeat Details
@@ -76,7 +81,14 @@ pub struct CliArgs {
     )]
     trust_value: Option<String>,
 
+
+
+
+
+
     // --- OTHERS ---
+
+    /// Gives a shields.io badge uri for your project
     #[arg(
         long = "badge"
     )]
