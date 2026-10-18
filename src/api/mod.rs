@@ -3,11 +3,11 @@
 //Let's get started with fetching some basic info first.
 //
 
-use std::error::Error;
+use std::{collections::HashMap, error::Error};
 
 use reqwest::StatusCode;
 
-use crate::api::models::HeartbeatResponse;
+use crate::api::models::{Heartbeat, HeartbeatResponse, StatsResponse};
 
 pub mod models;
 const BASE_URL: &str = "https://hackatime.hackclub.com";
@@ -36,13 +36,54 @@ pub async fn fetch_heartbeats(
     if status == StatusCode::UNAUTHORIZED {
         return Err("401 Unauthorized: Invalid API Key".into());
     }
-    if status == StatusCode::UNAUTHORIZED {
-        return Err("401 Unauthorized: Invalid API Key".into());
-    }
 
     let text = resp.text().await?;
     let data = parse_heartbeats(&text)?;
     Ok(data)
+}
+
+pub async fn fetch_stats(
+    key: &str,
+    start: Option<&str>,
+    end: Option<&str>,
+) -> Result<StatsResponse, Box<dyn std::error::Error>> {
+    let url = format!("{BASE_URL}/api/v1/users/my/stats");
+
+    let mut query = vec![("features", "languages,projects,editors")];
+    if let Some(start) = start {
+        query.push(("start_date", start));
+    }
+    if let Some(end) = end {
+        query.push(("end_date", end));
+    }
+
+    let resp = reqwest::Client::new()
+        .get(&url)
+        .bearer_auth(key)
+        .query(&query)
+        .send()
+        .await?;
+
+    Ok(resp.json::<StatsResponse>().await?)
+}
+
+pub fn count_os(hbs: &[Heartbeat]) -> (Vec<(String, u64)>, u64) {
+    let mut counts: HashMap<String, u64> = HashMap::new();
+    let mut missing = 0;
+    for hb in hbs {
+        match &hb.operating_system {
+            Some(raw) => {
+                let name = raw.to_lowercase();
+                *counts.entry(name).or_insert(0) += 1;
+            }
+            None => missing += 1,
+        }
+    }
+
+    let mut sorted: Vec<(String, u64)> = counts.into_iter().collect();
+    sorted.sort_by(|a, b| b.1.cmp(&a.1));
+
+    (sorted, missing)
 }
 
 #[cfg(test)]
