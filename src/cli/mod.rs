@@ -62,3 +62,30 @@ fn waka_parse(args: CliArgs, widget: bool) {
     }
 }
 
+/// Routes the hackatime specific main commands to their outputs
+fn hacka_parse(args: CliArgs, widget: bool) {
+    if args.stats {
+        if widget {
+            todo!(
+                "call nowidget stats"
+            )
+        } else {
+            todo!(
+                "call stats"
+            )
+        }
+    }
+    
+    if let Some(heartbeat) = args.heartbeat {
+        todo!(
+            "call heartbeat processor"
+        )
+    }
+    
+    if let Some(project_details) = args.project_details {
+        todo!(
+            "call project details processor"
+        )
+    }
+}
+
