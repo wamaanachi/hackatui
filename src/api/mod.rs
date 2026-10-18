@@ -16,6 +16,17 @@ pub mod models;
 const TEN_YEARS_AGO: &str = "2016-10-18T00:00:00Z";
 const BASE_URL: &str = "https://hackatime.hackclub.com";
 
+///Fetches everything the dashboard needs in one call.
+///
+///`start` and `end` are dates like `"2026-10-05"`. `None` for `start`
+///means ten years back; `None` and `end` means today.
+///
+///Totals, projects, languages, and streak come from the server's stats.
+///Editor and OS are estimated from raw heartbeats, each gap between consecutive
+///heartbeats counts for earlier one, capped at 2 minutes. Gaps with no editor or OS
+///are summed separately as `missing_os_seconds`
+///
+///THIS IS VERY VERY SLOW with long ranges, so use small windows for all time and stuff
 pub async fn fetch_dashboard(
     key: &str,
     start: Option<&str>,

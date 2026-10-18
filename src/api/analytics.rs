@@ -4,6 +4,11 @@ use crate::api::models::{Heartbeat, Share};
 
 const MAX_GAP_SECS: f64 = 120.0;
 
+/// Splits time across the values of one heartbeat field.
+///
+/// Each gap between consecutive heartbeats counts for the earlier one,
+/// capped at `MAX_GAP_SECS`, so long idle periods don't count as work.
+/// Returns the totals sorted largest first, plus seconds with no value.
 pub fn time_by<F>(heartbeats: &[Heartbeat], field: F) -> (Vec<(String, f64)>, f64)
 where
     F: Fn(&Heartbeat) -> Option<&str>,

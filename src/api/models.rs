@@ -94,6 +94,9 @@ pub struct StatsResponse {
 }
 
 #[derive(Debug, Serialize)]
+///Dashboard data for one date range
+///
+///LIsts are sorted with laregest entry first, so `projects[0]` his the top project.
 pub struct DashboardSummary {
     pub total_seconds: f64,
     pub streak: u64,
@@ -135,6 +138,9 @@ pub fn to_shares_from_stats(items: Option<&[Stats]>) -> Vec<Share> {
         .collect()
 }
 #[derive(Debug, Serialize)]
+///One entry in a breakdown list
+///
+///`percentage` is this entry's share of the list's total, from 0 to 100.
 pub struct Share {
     pub name: String,
     pub total_seconds: f64,
