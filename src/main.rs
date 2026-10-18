@@ -144,5 +144,5 @@ fn main() {
     }();
 
     ratatui::restore();
-    result
+    result.expect("picnicing");
 }
