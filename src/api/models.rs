@@ -1,3 +1,4 @@
+use clap::builder::Str;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -91,6 +92,21 @@ pub struct Data {
 pub struct StatsResponse {
     pub data: Data,
     pub trust_factor: TrustFactor,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct DashboardSummary {
+    pub total_seconds: u64,
+    pub streak: u64,
+    pub top_project: Option<String>,
+    pub top_language: Option<String>,
+    pub top_editor: Option<String>,
+    pub top_os: Option<String>,
+    pub projects: Vec<(String, u64)>,
+    pub languages: Vec<(String, u64)>,
+    pub editors: Vec<(String, u64)>,
+    pub operating_systems: Vec<(String, u64)>,
+    pub heartbeats_without_os: u64,
 }
 
 #[cfg(test)]
