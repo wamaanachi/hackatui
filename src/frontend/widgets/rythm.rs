@@ -11,10 +11,19 @@ pub fn render_rythm(frame: &mut Frame, area: Rect){
     let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
     let minutes = [
-        0, 0, 5, 45, 35, 10, 0, 0, 25, 55, 45, 10, 40, 20, 0, 0, 20
+        0, 0, 5, 45, 35, 10, 0, 0, 25, 55, 45, 10, 40, 20, 0, 0, 20, 45, 35, 20, 10, 25, 20, 30
+        // now they are 24 for the chart thnk yk?
     ];
 
     let mut rows = vec![];
+
+    let mut hours = String::from("     ");
+
+    for hour in 0..24 {
+        hours.push_str(&format!("{hour:02} ")); // um this so the hours are dusplayed like 06 instead 6 looks cool lol
+    }
+
+    rows.push(Line::from(hours));
 // lollll
     for day in days {
         let mut cells = vec![Span::raw(format!("{day}  "))];
@@ -39,9 +48,14 @@ pub fn render_rythm(frame: &mut Frame, area: Rect){
         cells.push(Span::raw(" "));
     }
     rows.push(Line::from(cells));
+
+    rows.push(Line::from(vec![
+
+    ]))
 }
     let widget = Paragraph::new(rows)
         .block(Block::bordered().title("The Rythm"));
 
     frame.render_widget(widget, area);
 }
+
