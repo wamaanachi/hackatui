@@ -28,6 +28,10 @@ use frontend::widgets::{
 // ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
 fn main() -> std::io::Result<()>{
     let mut terminal = ratatui::init();
+
+    let seconds: u64 = 9000;
+    let minutes = seconds / 60;
+    let time = format!("{}h {}m", minutes / 60, minutes % 60);
     let mut selected = '1';
 
     let result = || -> std::io::Result<()>{
@@ -47,9 +51,9 @@ fn main() -> std::io::Result<()>{
                 frame.render_widget(menu, areas[0]);
 
                 match selected {
-                    '1' => render_today(frame, areas[1], "8h 20m"),
+                    '1' => render_today(frame, areas[1], &time),
 
-                    '2' => render_progress(frame, areas[1], 150, 240),
+                    '2' => render_progress(frame, areas[1], minutes, 240),
 
                     '3' => {
                         let projects = [
