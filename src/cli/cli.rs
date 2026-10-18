@@ -105,9 +105,9 @@ impl CliArgs {
             return false;
         }
 
-        if     self.leaderboard.is_some()
-            || self.heartbeat  .is_some()
-            || self.badge      .is_some()
+        if self.leaderboard.is_some()
+            || self.heartbeat.is_some()
+            || self.badge.is_some()
         {
             return false;
         }
