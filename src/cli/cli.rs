@@ -108,8 +108,8 @@ impl CliArgs {
             return false;
         }
 
-        // Hackatime Specific Commands
-        if self.current_project {
+        // Global hackatime stuff
+        if self.current_project || self.banned || self.trust_value.is_none() {
             return false;
         }
 
