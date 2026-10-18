@@ -34,7 +34,7 @@ pub struct CliArgs {
     #[arg(
         long = "waka-stats",
     )]
-    stats: bool,
+    waka_stats: bool,
 
     // --- HACKATIME SPECIFIC STUFF ---
 
