@@ -1,4 +1,3 @@
-use clap::builder::Str;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -107,6 +106,12 @@ pub struct DashboardSummary {
     pub editors: Vec<(String, u64)>,
     pub operating_systems: Vec<(String, u64)>,
     pub heartbeats_without_os: u64,
+}
+#[derive(Debug, Deserialize)]
+pub struct Share {
+    pub name: String,
+    pub total_seconds: f64,
+    pub percent: f64,
 }
 
 #[cfg(test)]
