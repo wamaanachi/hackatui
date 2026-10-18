@@ -54,6 +54,9 @@ pub struct CliArgs {
     )]
     stats: bool,
 
+
+
+
     // -- Global Hackatime Stuff --
 
     /// How many people are currently hacking?
