@@ -19,16 +19,20 @@ pub fn parse_heartbeats(json_str: &str) -> Result<HeartbeatResponse, serde_json:
 pub async fn fetch_heartbeats(
     key: &str,
     start: &str,
-    end: &str,
+    end: Option<&str>,
 ) -> Result<HeartbeatResponse, Box<dyn Error>> {
     let url = format!("{BASE_URL}/api/v1/my/heartbeats");
 
+    let mut query = vec![("start_time", start)];
+    if let Some(end) = end {
+        query.push(("end_time", end));
+    }
     //curl 'https://hackatime.hackclub.com/api/v1/my/heartbeats?start_time=&end_time=' \
     // --header 'Authorization: Bearer YOUR_SECRET_TOKEN'
     let resp = reqwest::Client::new()
         .get(&url)
         .bearer_auth(key)
-        .query(&[("start_time", start), ("end_time", end)])
+        .query(&query)
         .send()
         .await?;
 
@@ -148,7 +152,8 @@ mod test {
     #[ignore]
     async fn live_fetch_works() {
         let key = crate::config::load_key().expect("Failed to load the key for live test");
-        let res = fetch_heartbeats(&key, "2026-03-20T00:00:00Z", "2026-03-20T23:59:59Z").await;
+        let res =
+            fetch_heartbeats(&key, "2026-10-05T00:00:00Z", Some("2026-10-11T23:59:59Z")).await;
         assert!(res.is_ok(), "Live fetch error: {:?}", res.err());
     }
 }
