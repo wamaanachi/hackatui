@@ -12,6 +12,7 @@ use ratatui::layout::{Constraint, Layout};
 use ratatui::style::Color;
 use tui_piechart::PieSlice;
 use ratatui::widgets::Paragraph;
+use frontend::widgets::message::render_message;
 
 // gonna test out all of these now
 use frontend::widgets::{
@@ -52,7 +53,7 @@ fn main() -> std::io::Result<()>{
                 frame.render_widget(menu, areas[0]);
 
                 match selected {
-                    '1' => render_today(frame, areas[1], &time),
+                    '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
 
                     '2' => render_progress(frame, areas[1], minutes, 240),
 
