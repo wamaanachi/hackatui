@@ -8,3 +8,4 @@ pub mod project_details;
 pub mod project_page;
 pub mod calender;
 pub mod message;
+pub mod summary;

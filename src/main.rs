@@ -25,6 +25,7 @@ use frontend::widgets::{
     project_details::render_project_details,
     project_page::render_project_card,
     calender::render_calender,
+    summary::render_summary,
 };
 
 // ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
@@ -53,7 +54,9 @@ fn main() -> std::io::Result<()>{
                 frame.render_widget(menu, areas[0]);
 
                 match selected {
-                    '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+                    // '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
+
+                    '1' => render_summary(frame, areas[1], ["6872h 42m", "hackatui", "rust", "Linux", "Neovim", "Coding"]),
 
                     '2' => render_progress(frame, areas[1], minutes, 240),
 
