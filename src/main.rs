@@ -23,6 +23,7 @@ use frontend::widgets::{
     rythm::render_rythm,
     project_details::render_project_details,
     project_page::render_project_card,
+    calender::render_calender,
 };
 
 // ok so im gonna display them 1 by 1 for now cause i aint making the dashboard :hehehehheheeheheheheheh:
@@ -102,6 +103,8 @@ fn main() -> std::io::Result<()>{
                         render_project_card(frame, rows[i], name, time, description, language,);
                     }
                     }
+
+                    '0' => render_calender(frame, areas[1]),
                     _ => {}
                 }
             })?;
@@ -114,6 +117,9 @@ fn main() -> std::io::Result<()>{
                             selected = number;
                         }
 
+                        KeyCode::Char('0') => {
+                            selected = '0';
+                        }
                         _=> {}
                     }
                 }
