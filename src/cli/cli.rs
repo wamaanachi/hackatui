@@ -9,6 +9,8 @@ use clap::Parser;
     long_about = None,
 )]
 pub struct CliArgs {
+    // --- WAKATIME COMPATIBLE
+
     /// Gives the current user
     #[arg(
         short = 'u',
