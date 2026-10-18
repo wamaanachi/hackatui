@@ -2,12 +2,23 @@
 
 pub mod cli;
 
+use clap::arg;
 use cli::CliArgs;
 
+
+/// Routes the cli args to their various outputs
 pub(crate) fn parse(args: CliArgs) {
-    todo!(
-        "Add parser"
-    )
+    let widget: bool;
+    if args.no_widget {
+        widget = false;
+    } else {
+        widget = true;
+    }
+
+    waka_parse         (args.clone(), widget);
+    hacka_parse        (args.clone(), widget);
+    hacka_global_parse (args.clone(), widget);
+    hacka_other_parse  (args.clone(), widget);
 }
 
 
@@ -75,13 +86,13 @@ fn hacka_parse(args: CliArgs, widget: bool) {
             )
         }
     }
-    
+
     if let Some(heartbeat) = args.heartbeat {
         todo!(
             "call heartbeat processor"
         )
     }
-    
+
     if let Some(project_details) = args.project_details {
         todo!(
             "call project details processor"
