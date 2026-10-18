@@ -89,3 +89,42 @@ fn hacka_parse(args: CliArgs, widget: bool) {
     }
 }
 
+/// Routes the hackatime specific global userbase commands to their outputs
+fn hacka_global_parse(args: CliArgs, widget: bool) {
+    if args.currently_hacking {
+        if widget {
+            todo!(
+                "call nowidget currently hacking"
+            )
+        } else {
+            todo!(
+                "call currently hacking"
+            )
+        }
+    }
+
+    if args.banned {
+        if widget {
+            todo!(
+                "call nowidget banned"
+            )
+        } else {
+            todo!(
+                "call banned"
+            )
+        }
+    }
+
+    if let Some(leaderboard) = args.leaderboard {
+        todo!(
+            "call leaderboard processor"
+        )
+    }
+
+    if let Some(trust) = args.trust {
+        todo!(
+            "call trust processor"
+        )
+    }
+}
+
