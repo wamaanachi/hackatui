@@ -33,7 +33,7 @@ use crate::cli::cli::CliArgs;
 fn main() {
     let args: CliArgs = CliArgs::parse();
 
-    // I mage it so that the tui stuff only runs when no cli args passed
+    // I made it so that the tui stuff only runs when no cli args passed
     if !args.is_empty() {
         // todo!(
         //     "Call the cli parser, then sys.exit()"
