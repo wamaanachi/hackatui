@@ -32,8 +32,7 @@ pub struct CliArgs {
 
     /// Gives stats for the past week
     #[arg(
-        short = 's',
-        long = "stats",
+        long = "waka-stats",
     )]
     stats: bool,
 
@@ -49,13 +48,13 @@ pub struct CliArgs {
     #[arg(
         long = "leaderboard"
     )]
-    leaderboard: String,
+    leaderboard: Option<String>,
 
     /// Heartbeat Details
     #[arg(
         long = "heartbeat"
     )]
-    heartbeat: String,
+    heartbeat: Option<String>,
 }
 
 
@@ -76,11 +75,11 @@ impl CliArgs {
             return false;
         }
 
-        if !self.leaderboard.is_empty() {
+        if !self.leaderboard.is_none() {
             return false;
         }
 
-        if !self.heartbeat.is_empty() {
+        if !self.heartbeat.is_none() {
             return false;
         }
 
