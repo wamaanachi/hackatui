@@ -113,7 +113,7 @@ impl CliArgs {
             return false;
         }
 
-        if self.leaderboard.is_some() {
+        if self.stats {
             return false;
         }
 
