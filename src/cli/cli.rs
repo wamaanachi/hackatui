@@ -43,17 +43,17 @@ pub struct CliArgs {
 
     // --- HACKATIME SPECIFIC STUFF ---
 
-    /// Heartbeat Details
-    #[arg(
-        long = "heartbeat"
-    )]
-    heartbeat: Option<String>,
-
     /// Gives u stats
     #[arg(
         long = "stats"
     )]
     stats: bool,
+
+    /// Heartbeat Details
+    #[arg(
+        long = "heartbeat"
+    )]
+    heartbeat: Option<String>,
 
     /// Gives details of your projects
     #[arg(
@@ -72,17 +72,17 @@ pub struct CliArgs {
     )]
     current_project: bool,
 
-    /// Leaderboard Status
-    #[arg(
-        long = "leaderboard"
-    )]
-    leaderboard: Option<String>,
-
     /// How many banned users?
     #[arg(
         long = "banned"
     )]
     banned: bool,
+
+    /// Leaderboard Status
+    #[arg(
+        long = "leaderboard"
+    )]
+    leaderboard: Option<String>,
 
     /// Trust value of user
     #[arg(
@@ -122,22 +122,33 @@ impl CliArgs {
     /// returns -> bool
     pub(crate) fn is_empty(&self) -> bool {
         // Wakatime Compatible Commands
-        if self.current_user || self.summary || self.status || self.waka_stats {
+        if     self.current_user
+            || self.summary
+            || self.status
+            || self.waka_stats
+        {
             return false;
         }
 
-        // Global hackatime stuff
-        if self.current_project || self.banned || self.trust_value.is_none() {
-            return false;
-        }
-
-        if self.stats {
-            return false;
-        }
-
-        if self.leaderboard.is_some()
+        // Hackatime specific stuff
+        if     self.stats
             || self.heartbeat.is_some()
-            || self.badge.is_some()
+            || self.project_details.is_some()
+        {
+            return false;
+        }
+
+        // Global Hackatime Stuff
+        if     self.current_project
+            || self.banned
+            || self.leaderboard.is_some()
+            || self.trust_value.is_some()
+        {
+            return false;
+        }
+
+        if     self.badge.is_some()
+            || self.lookup.is_some()
         {
             return false;
         }
