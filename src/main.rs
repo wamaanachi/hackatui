@@ -40,7 +40,7 @@ fn main() {
         // )
       
         // (just ignores it for now)
-        let ignore: bool = true
+        let ignore: bool = true;
     }
     
     let mut terminal = ratatui::init();
