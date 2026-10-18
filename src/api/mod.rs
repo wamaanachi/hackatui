@@ -2,7 +2,7 @@
 
 //Let's get started with fetching some basic info first.
 //
-
+pub mod analytics;
 use std::{collections::HashMap, error::Error};
 
 use reqwest::StatusCode;
