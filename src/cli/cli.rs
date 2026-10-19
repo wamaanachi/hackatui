@@ -16,25 +16,25 @@ pub struct CliArgs {
         short = 'u',
         long = "user"
     )]
-    current_user: bool,
+    pub(crate) current_user: bool,
 
     /// Gives a Summary of your hacking
     #[arg(
         long = "summary"
     )]
-    summary: bool,
+    pub(crate) summary: bool,
 
     /// Gives Status for today
     #[arg(
         long = "status",
     )]
-    status: bool,
+    pub(crate) status: bool,
 
     /// Gives stats for the past week
     #[arg(
         long = "waka-stats",
     )]
-    waka_stats: bool,
+    pub(crate) waka_stats: bool,
 
 
 
@@ -47,19 +47,19 @@ pub struct CliArgs {
     #[arg(
         long = "stats"
     )]
-    stats: bool,
+    pub(crate) stats: bool,
 
     /// Heartbeat Details
     #[arg(
         long = "heartbeat"
     )]
-    heartbeat: Option<String>,
+    pub(crate) heartbeat: Option<String>,
 
     /// Gives details of your projects
     #[arg(
         long = "project-details"
     )]
-    project_details: Option<String>,
+    pub(crate) project_details: Option<String>,
 
 
 
@@ -68,28 +68,28 @@ pub struct CliArgs {
 
     /// How many people are currently hacking?
     #[arg(
-        long = "current-project"
+        long = "currently-hacking"
     )]
-    current_project: bool,
+    pub(crate) currently_hacking: bool,
 
     /// How many banned users?
     #[arg(
         long = "banned"
     )]
-    banned: bool,
+    pub(crate) banned: bool,
 
     /// Leaderboard Status
     #[arg(
         long = "leaderboard"
     )]
-    leaderboard: Option<String>,
+    pub(crate) leaderboard: Option<String>,
 
     /// Trust value of user
     #[arg(
         long = "trust-value",
         default_value = "self"
     )]
-    trust_value: Option<String>,
+    pub(crate) trust: Option<String>,
 
 
 
@@ -102,7 +102,7 @@ pub struct CliArgs {
     #[arg(
         long = "badge"
     )]
-    badge: Option<String>,
+    pub(crate) badge: Option<String>,
 
     /// Lookup user
     ///
@@ -110,7 +110,14 @@ pub struct CliArgs {
     #[arg(
         long = "lookup"
     )]
-    lookup: Option<String>,
+    pub(crate) lookup: Option<String>,
+
+
+    // --- HACKATUI SPECIFIC STUFF ---
+    #[arg(
+        long = "no-widget"
+    )]
+    pub(crate) no_widget: bool,
 }
 
 
@@ -139,10 +146,10 @@ impl CliArgs {
         }
 
         // Global Hackatime Stuff
-        if     self.current_project
+        if     self.currently_hacking
             || self.banned
             || self.leaderboard.is_some()
-            || self.trust_value.is_some()
+            || self.trust.is_some()
         {
             return false;
         }
