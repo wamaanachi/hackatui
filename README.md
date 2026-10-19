@@ -47,7 +47,7 @@ Or download from command line, like this:
 #### Download (Linux only)
 
 ```shell
-curl -L https://github.com/wamaanachi/hackatui/releases/download/Release/hackatui-0.1.0-x86_64-Linux -o hackatui
+curl -L https://github.com/wamaanachi/hackatui/releases/download/Release/hackatui-0.0.1-x86_64-Linux -o hackatui
 chmod +x hackatui
 ```
 
