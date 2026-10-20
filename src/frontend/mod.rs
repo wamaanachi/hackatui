@@ -5,32 +5,24 @@ pub mod widgets;
 use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind};
 // yep we'll def need to change this file later
 use ratatui::layout::{Constraint, Layout};
-use ratatui::style::Color;
 use ratatui::widgets::Paragraph;
+
+use crate::api::models::DashboardSummary;
 
 // gonna test out all of these now
 use crate::frontend::widgets::{
-    calender::render_calender,
-    pie::render_pie,
-    progress::render_progress,
-    project_details::render_project_details,
-    project_page::render_project_card,
-    projects::render_fake_ahh_projects,
-    rythm::render_rythm,
-    summary::render_summary,
-    timeline::render_timeline,
-    weeklyGraph::render_weekly,
+    calender::render_calender, pie::render_pie, progress::render_progress,
+    project_details::render_project_details, project_page::render_project_card,
+    projects::render_fake_ahh_projects, rythm::render_rythm, summary::render_summary,
+    timeline::render_timeline, weekly_graph::render_weekly,
 };
 
-pub(crate) fn tui_stuff() {
+pub(crate) fn tui_stuff(summary: &DashboardSummary) {
     let mut terminal = ratatui::init();
 
-    let seconds: u64 = 9000;
-    let minutes = seconds / 60;
-    let _time = format!("{}h {}m", minutes / 60, minutes % 60);
     let mut selected = '1';
 
-    let result = || -> std::io::Result<()>{
+    let result = || -> std::io::Result<()> {
         loop {
             terminal.draw(|frame| {
                 // umm yea this code shouldnt be in main lol
@@ -38,10 +30,10 @@ pub(crate) fn tui_stuff() {
                     Constraint::Length(2),
                     Constraint::Min(0),
                 ])
-                    .split(frame.area());
+                .split(frame.area());
 
                 let menu = Paragraph::new(
-                    "1 Today | 2 Progress | 3 Projects | 4 Weekly | 5 Pie | q Exit",
+                    "1 Summary | 2 Progress | 3 Projects | 4 Weekly | 5 Languages | 6 Editors | 7 Rythm | 8 Details | 9 Cards | 0 Calendar | t Timeline | q Exit",
                 );
 
                 frame.render_widget(menu, areas[0]);
@@ -49,71 +41,49 @@ pub(crate) fn tui_stuff() {
                 match selected {
                     // '1' => render_message(frame, areas[1], "No Activity", "No coding activity in this period"),
 
-                    '1' => render_summary(frame, areas[1], ["6872h 42m", "hackatui", "rust", "Linux", "Neovim", "Coding"]),
+                    '1' => render_summary(frame, areas[1], summary),
 
-                    '2' => render_progress(frame, areas[1], minutes, 240),
+                    '2' => render_progress(frame, areas[1], summary, 240),
 
-                    '3' => {
-                        let projects = [
-                            ("hackaTui", "4h 20m", 100),
-                            ("prophesizer", "3h 00m", 67),
-                            ("lankat", "1h 30m", 33),
-                        ];
-                        render_fake_ahh_projects(frame, areas[1], &projects)
-                    },
+                    '3' => render_fake_ahh_projects(frame, areas[1], &summary.projects),
 
-                    '4' => render_weekly(frame, areas[1]),
+                    '4' => render_weekly(frame, areas[1], summary),
 
-                    '5' => {
-                        let slices = [
-                            ("lath", 3680, Color::Blue), // lets see of this works
-                            ("rust", 4520, Color::Yellow),
-                        ];
+                    '5' => render_pie(frame, areas[1], "Languages", &summary.languages),
 
-                        render_pie(frame, areas[1], "Cool Languages", &slices, );
-                    }
+                    '6' => render_pie(frame, areas[1], "Editors", &summary.editors),
 
-                    '6' => {
-                        let editors = [
-                            ("Veonim", 78930, Color::Blue),
-                            ("emacs", 58740, Color::Yellow),
-                        ];
-
-                        render_pie(frame, areas[1], "Editors", &editors);
-                    }
-
-                    '7' => render_rythm(frame, areas[1]),
+                    '7' => render_rythm(frame, areas[1], summary),
                     // i put the example data in the rythm file
 
-                    '8' => render_project_details(frame, areas[1]),
+                    '8' => render_project_details(frame, areas[1], summary),
 
                     '9' => {
-                        let projects = [
-                            ("hackatui", "8h 14m", "Hackatime in terminal", "Rust"),
-                            ("lath", "3h 42m", "Cool programming language", "Rust"),
-                            ("timetable", "7h 25m", "Timetable generator", "Javascript"),
-                        ];
+                        let rows = Layout::vertical(vec![
+                            Constraint::Length(8);
+                            summary.projects.len().max(1)
+                        ])
+                        .split(areas[1]);
 
-                        let rows = Layout::vertical(vec![Constraint::Length(8); projects.len()],
-                        ).split(areas[1]);
-
-                        for (i, (name, time, description, language)) in projects.iter().enumerate() {
-                            render_project_card(frame, rows[i], name, time, description, language, );
+                        for (i, project) in summary.projects.iter().enumerate() {
+                            render_project_card(frame, rows[i], project);
                         }
                     }
 
-                    '0' => render_calender(frame, areas[1]),
+                    '0' => render_calender(frame, areas[1], summary),
 
-                    't' => render_timeline(frame, areas[1]),
+                    't' => render_timeline(frame, areas[1], summary),
                     _ => {}
                 }
             })?;
+
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
-                        KeyCode::Char('x') => break,
+                        KeyCode::Char('q') | KeyCode::Char('x') => break,
 
-                        KeyCode::Char(number @ '1'..='9') => { // lol i coundnt figure out how to loop
+                        KeyCode::Char(number @ '1'..='9') => {
+                            // lol i coundnt figure out how to loop
                             selected = number;
                         }
 
