@@ -1,25 +1,28 @@
-pub mod cli;
-pub mod frontend;
 pub mod api;
+pub mod cli;
 pub mod config;
+pub mod frontend;
 
-
-use clap::Parser;
 use crate::cli::cli::CliArgs;
-use crate::cli::parse;
-
 use crate::frontend::tui_stuff;
+use clap::Parser;
+use std::error::Error;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     let args: CliArgs = CliArgs::parse();
 
-    // I made it so that the tui stuff only runs when no cli args passed
-    if !args.is_empty() {
-        // parse(args);
+    let key = crate::config::load_key().expect("Failed to load API key from config!");
 
-        // (just ignores it for now)
-        let _ignore: bool = true;
+    // If CLI flags were given, fetch and print to stdout instead of starting TUI
+    if !args.is_empty() {
+        let summary = crate::api::fetch_dashboard(&key, Some("2026-10-01"), None).await?;
+        crate::cli::parse(args, &summary);
     } else {
-        tui_stuff()
+        println!("Fetching dashboard data from HackaTime...");
+        let summary = crate::api::fetch_dashboard(&key, Some("2026-10-01"), None).await?;
+        tui_stuff(&summary);
     }
+
+    Ok(())
 }
