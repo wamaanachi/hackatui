@@ -7,13 +7,8 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
 use ratatui::Frame;
 
-pub fn render_rythm(frame: &mut Frame, area: Rect){
+pub fn render_rythm(frame: &mut Frame, area: Rect, minutes: &[[u64; 24]; 7]){
     let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-    let minutes = [
-        0, 0, 5, 45, 35, 10, 0, 0, 25, 55, 45, 10, 40, 20, 0, 0, 20, 45, 35, 20, 10, 25, 20, 30
-        // now they are 24 for the chart thnk yk?
-    ];
 
     let mut rows = vec![];
 
@@ -25,12 +20,12 @@ pub fn render_rythm(frame: &mut Frame, area: Rect){
 
     rows.push(Line::from(hours));
 // lollll
-    for day in days {
+    for (index, day) in days.iter().enumerate() {
         let mut cells = vec![Span::raw(format!("{day}  "))];
         //bruhh
         // handwriting these examples is boring
 
-        for value in minutes {
+        for &value in &minutes[index] {
         let color = if value == 0 {
             Color::DarkGray
         }
@@ -54,7 +49,7 @@ pub fn render_rythm(frame: &mut Frame, area: Rect){
     ]))
 }
     let widget = Paragraph::new(rows)
-        .block(Block::bordered().title("The Rythm"));
+        .block(Block::bordered().title("Rhythm (this week, UTC)"));
 
     frame.render_widget(widget, area);
 }

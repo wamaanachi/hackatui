@@ -111,3 +111,28 @@ mod test {
         assert!(res.is_ok(), "Live fetch error: {:?}", res.err());
     }
 }
+
+pub async fn fetch_data<T: serde::de::DeserializeOwned>(
+    key: &str,
+    path: &str,
+) -> Result<T, Box<dyn Error>> {
+    let response = reqwest::Client::new()
+        .get(format!("{BASE_URL}/api/hackatime/v1/users/current/{path}"))
+        .bearer_auth(key)
+        .timeout(std::time::Duration::from_secs(20))
+        .send().await?
+        .error_for_status()?
+        .json::<models::ApiResponse<T>>().await?;
+    Ok(response.data)
+}
+
+pub async fn fetch_extra<T: serde::de::DeserializeOwned>(
+    key: &str,
+    path: &str,
+    query: &[(&str, String)],
+) -> Result<T, Box<dyn Error>> {
+    Ok(reqwest::Client::new().get(format!("{BASE_URL}{path}"))
+        .bearer_auth(key).query(query)
+        .timeout(std::time::Duration::from_secs(20))
+        .send().await?.error_for_status()?.json().await?)
+}

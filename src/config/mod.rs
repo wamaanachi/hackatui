@@ -55,7 +55,7 @@ fn read_cfg() -> Result<String, ConfigError> {
 fn parse_cfg_file(contents: &str) -> Option<String> {
     contents.lines().find_map(|line| {
         let (key, value) = line.trim().split_once("=")?;
-        if key == "api_key" {
+        if key.trim() == "api_key" {
             Some(value.trim().to_string())
         } else {
             None

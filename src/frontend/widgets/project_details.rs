@@ -3,9 +3,9 @@ use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Paragraph, Sparkline};
 use ratatui::Frame;
 
-pub fn render_project_details(frame: &mut Frame, area: Rect){
+pub fn render_project_details(frame: &mut Frame, area: Rect, name: &str, total: &str, week: &str, languages: &str, activity: &[u64]){
 
-    let block = Block::bordered().title("hackatui");
+    let block = Block::bordered().title(name);
         // ratatui is lowk good
 
     let inner = block.inner(area);
@@ -17,20 +17,15 @@ pub fn render_project_details(frame: &mut Frame, area: Rect){
     ])
     .split(inner);
 
-    let text = Paragraph::new(
-       "Total time:     14h 40m\n\
-        This week:      8h 30m\n\
-        Top language:   Rust\n\
-        \n\
-        Daily activity:",
-    );
+    let text = Paragraph::new(format!(
+        "Loaded range: {total}\nThis week: {week}\nLanguages: {languages}\n\nDaily activity (minutes, UTC):"
+    ));
 
     frame.render_widget(text, sections[0]);
 
-    let activity = [40, 20, 60, 30, 50, 40, 120, 140];
 
     let chart = Sparkline::default()
-        .data(&activity)
+        .data(activity)
         .style(Style::default().fg(Color::Cyan));
 
     frame.render_widget(chart, sections[1]);

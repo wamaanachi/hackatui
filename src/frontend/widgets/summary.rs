@@ -7,7 +7,7 @@ pub fn render_summary(frame: &mut Frame, area: Rect, values: [&str; 6],){
     // these are the 6 boxes you see on top of the hackatime dash, idk if the api has all of these
 
     let titles = [
-        "Total Time", "Top Project", "Top Language", "Top OS", "Top Editor", "Top Category",
+        "All-time Total", "Top Project", "Top Language", "Top OS", "Top Editor", "Top Category",
     ];
 
     let area = Rect::new(area.x, area.y, area.width, area.height.min(3));
