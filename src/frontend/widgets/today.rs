@@ -3,11 +3,15 @@
 
 // im using ratatui official docs, when im stuck n stuff
 
-use ratatui::widgets::{Block, BorderType, Paragraph};
-use ratatui::layout::{Alignment, Rect};
 use ratatui::Frame;
+use ratatui::layout::{Alignment, Rect};
+use ratatui::widgets::{Block, BorderType, Paragraph};
 
-pub fn render_today(frame: &mut Frame, area: Rect, time: &str){
+use crate::api::models::DashboardSummary;
+
+pub fn render_today(frame: &mut Frame, area: Rect, summary: &DashboardSummary) {
+    let secs = summary.total_seconds as u64;
+    let time = format!("{}h {}m", secs / 3600, (secs % 3600) / 60);
 
     let today_box = Block::bordered()
         .title("Today's Time")

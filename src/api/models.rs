@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 pub struct HeartbeatResponse {
@@ -30,75 +30,151 @@ pub struct Heartbeat {
     pub line_deletions: Option<u64>,
 }
 
+//{
+//  "data": {
+//    "total_seconds": 3600,
+//    "daily_average": 1800,
+//    "languages": [
+//      {
+//        "name": "Ruby",
+//        "total_seconds": 2400,
+//        "percent": 66.6
+//      }
+//    ],
+//    "projects": [
+//      {
+//        "name": "hackatime",
+//        "total_seconds": 3600,
+//        "percent": 100
+//      }
+//    ],
+//    "editors": [
+//      {
+//        "name": "VS Code",
+//        "total_seconds": 3600,
+//        "percent": 100
+//      }
+//    ],
+//    "streak": 7,
+//    "unique_total_seconds": 12960
+//  },
+//  "trust_factor": {
+//    "trust_level": "blue",
+//    "trust_value": 0
+//  }
+//}
+//
 #[derive(Debug, Deserialize)]
-pub struct ApiResponse<T> {
-    pub data: T,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct StatItem {
-    pub name: String,
-    pub total_seconds: f64,
+pub struct TrustFactor {
+    pub trust_level: String,
+    pub trust_value: usize,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Stats {
-    pub user_id: String,
+    pub name: String,
+    pub total_seconds: u64,
+    pub percent: f64,
+}
+#[derive(Debug, Deserialize)]
+pub struct Data {
+    pub total_seconds: u64,
+    pub daily_average: u64,
+    pub languages: Option<Vec<Stats>>,
+    pub projects: Option<Vec<Stats>>,
+    pub editors: Option<Vec<Stats>>,
+    pub streak: u64,
+    pub unique_total_seconds: Option<u64>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct StatsResponse {
+    pub data: Data,
+    pub trust_factor: TrustFactor,
+}
+
+#[derive(Debug, Serialize)]
+///Dashboard data for one date range
+///
+///LIsts are sorted with laregest entry first, so `projects[0]` his the top project.
+pub struct DashboardSummary {
     pub total_seconds: f64,
-    pub projects: Vec<StatItem>,
-    pub languages: Vec<StatItem>,
-    pub editors: Vec<StatItem>,
-    pub operating_systems: Vec<StatItem>,
-    pub categories: Vec<StatItem>,
+    pub streak: u64,
+    pub projects: Vec<Share>,
+    pub languages: Vec<Share>,
+    pub editors: Vec<Share>,
+    pub operating_systems: Vec<Share>,
+    pub missing_os_seconds: f64,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Today {
-    pub grand_total: Total,
-    pub goal: Option<Goal>,
+impl DashboardSummary {
+    pub fn from_parts(
+        stats: &Data,
+        editors: Vec<Share>,
+        operating_systems: Vec<Share>,
+        missing_os_seconds: f64,
+    ) -> Self {
+        DashboardSummary {
+            total_seconds: stats.total_seconds as f64,
+            streak: stats.streak,
+            projects: to_shares_from_stats(stats.projects.as_deref()),
+            languages: to_shares_from_stats(stats.languages.as_deref()),
+            editors,
+            operating_systems,
+            missing_os_seconds,
+        }
+    }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Total {
-    pub total_seconds: f64,
+pub fn to_shares_from_stats(items: Option<&[Stats]>) -> Vec<Share> {
+    items
+        .unwrap_or(&[])
+        .iter()
+        .map(|s| Share {
+            name: s.name.clone(),
+            total_seconds: s.total_seconds as f64,
+            percent: s.percent,
+        })
+        .collect()
 }
-
-#[derive(Debug, Deserialize)]
-pub struct Goal {
-    pub target_seconds: f64,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Daily {
-    pub grand_total: Total,
-    pub projects: Vec<StatItem>,
-    pub range: DayRange,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct DayRange {
-    pub date: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct SpanResponse {
-    pub spans: Vec<ActivitySpan>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ActivitySpan {
-    pub start_time: f64,
-    pub end_time: f64,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ProjectResponse {
-    pub projects: Vec<ProjectInfo>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ProjectInfo {
+#[derive(Debug, Serialize)]
+///One entry in a breakdown list
+///
+///`percentage` is this entry's share of the list's total, from 0 to 100.
+pub struct Share {
     pub name: String,
     pub total_seconds: f64,
-    pub languages: Vec<String>,
+    pub percent: f64,
+}
+
+#[cfg(test)]
+mod test {
+    use crate::api::models::{DashboardSummary, Data, StatsResponse};
+
+    #[test]
+    fn parses_real_stats_response() {
+        let sample = include_str!("fixtures/stats.json");
+        let parsed: StatsResponse =
+            serde_json::from_str(sample).unwrap_or_else(|e| panic!("parse failed: {e}"));
+        assert!(parsed.data.total_seconds > 0);
+    }
+
+    #[test]
+    fn from_parts_handles_missing_lists() {
+        let stats = Data {
+            total_seconds: 3600,
+            daily_average: 0,
+            languages: None,
+            projects: None,
+            editors: None,
+            streak: 1,
+            unique_total_seconds: None,
+        };
+
+        let summary = DashboardSummary::from_parts(&stats, vec![], vec![], 0.0);
+
+        assert_eq!(summary.total_seconds, 3600.0);
+        assert_eq!(summary.streak, 1);
+        assert!(summary.projects.is_empty());
+    }
 }

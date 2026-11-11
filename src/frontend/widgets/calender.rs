@@ -1,15 +1,16 @@
+use ratatui::Frame;
 use ratatui::layout::Rect;
 use ratatui::style::{Color, Style};
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
-use ratatui::Frame;
+
+use crate::api::models::DashboardSummary;
 
 // yo from now on you might see a million typos in the file becauwe mmy new k3 keyboard just arrived (its so good!!11!)
 // but ill fix them in the next commit.
-pub fn render_calender(frame: &mut Frame, area: Rect){
+pub fn render_calender(frame: &mut Frame, area: Rect, summary: &DashboardSummary) {
+    // im gonna change it so colors would change depending on the time you codded that day
 
-    // im gonna change it so colors would change depending on the time you codded that day 
-    
     let activity = [
         (3, 10),
         (5, 210),
@@ -24,7 +25,7 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
         (23, 150),
         (28, 88),
     ];
-    // just some random days 
+    // just some random days
 
     let mut active_days = vec![];
 
@@ -41,33 +42,25 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
     let mut active_count = 0;
 
     for day in 1..=today {
-        if active_days.contains(&day){
-    streak +=1;
-    active_count +=1;
+        if active_days.contains(&day) {
+            streak += 1;
+            active_count += 1;
 
-    if streak > longest {
-        longest = streak;
-    }
-        }
-        else {
+            if streak > longest {
+                longest = streak;
+            }
+        } else {
             streak = 0;
         }
     }
 
-    let mut current = 0;
-    let mut day = today;
-
-    if !active_days.contains(&day){
-        day -= 1;
+    // Use the real streak from the API, falling back to longest if streak is higher
+    let current = summary.streak;
+    if current > longest {
+        longest = current;
     }
 
-    while day > 0 && active_days.contains(&day){
-        current += 1;
-        day -= 1;
-    }
-    let mut rows = vec![
-        Line::from("Mon Tue Wed Thu Fri Sat Sun"),
-    ];
+    let mut rows = vec![Line::from("Mon Tue Wed Thu Fri Sat Sun")];
 
     let mut cells = vec![];
 
@@ -78,7 +71,6 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
     }
 
     for day in 1..=31 {
-
         let mut minutes = 0;
 
         for (date, total) in activity {
@@ -88,14 +80,13 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
         }
 
         // you know what, i might change it so the shade of color depends on the exact time you coded
-        // instead making a threshold for color 
+        // instead making a threshold for color
         // oh yeah that'd so ccol ill def do it
         // done btw
 
         let color = if day > today || minutes == 0 {
             Color::DarkGray
-        }
-        else {
+        } else {
             let shade = minutes.min(240) as f64 / 240.0;
 
             // some weird color code
@@ -105,7 +96,6 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
 
             Color::Rgb(red, green, blue)
         };
-
 
         // yep will ddefinately change thos hardcoded rgbs
         cells.push(Span::styled(
@@ -118,19 +108,18 @@ pub fn render_calender(frame: &mut Frame, area: Rect){
 
             cells = vec![];
         }
-}
+    }
 
-if !cells.is_empty(){
-    rows.push(Line::from(cells));
-}
+    if !cells.is_empty() {
+        rows.push(Line::from(cells));
+    }
 
-rows.push(Line::from(""));
-rows.push(Line::from(format!("Current streak: {current} days")));
-rows.push(Line::from(format!("Longest streak: {longest} days")));
-rows.push(Line::from(format!("Active days: {active_count}")));
+    rows.push(Line::from(""));
+    rows.push(Line::from(format!("Current streak: {current} days")));
+    rows.push(Line::from(format!("Longest streak: {longest} days")));
+    rows.push(Line::from(format!("Active days: {active_count}")));
 
-let calender = Paragraph::new(rows)
-    .block(Block::bordered().title("October Activity"));
+    let calender = Paragraph::new(rows).block(Block::bordered().title("Activity Calendar"));
 
     frame.render_widget(calender, area);
 }

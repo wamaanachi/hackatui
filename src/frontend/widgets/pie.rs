@@ -1,60 +1,66 @@
-use ratatui::layout::Rect;
-use ratatui::widgets::Block;
 use ratatui::Frame;
-use tui_piechart::{PieChart, PieSlice};
-use ratatui::layout::{Constraint, Layout};
-use ratatui::widgets::Paragraph;
+use ratatui::layout::{Constraint, Layout, Rect};
 use ratatui::style::{Color, Style};
 use ratatui::text::{Line, Span};
+use ratatui::widgets::{Block, Paragraph};
+use tui_piechart::{PieChart, PieSlice};
 
-// umm i found this random crate online
-// if you wanna use it - https://crates.io/crates/tui-piechart
+use crate::api::models::Share;
 
-pub fn render_pie(frame: &mut Frame, area:Rect, title: &str, data: &[(&str, u64, Color)],){
+const PALETTE: [Color; 6] = [
+    Color::Red,
+    Color::Blue,
+    Color::Green,
+    Color::Yellow,
+    Color::Magenta,
+    Color::Cyan,
+];
 
+/// Draws a pie chart with a legend for a breakdown list from `DashboardSummary`.
+///
+/// Each entry's color is taken from `PALETTE` by position, so the slice and
+/// its legend line always match. `percent` comes from the data, not from
+/// this function.
+pub fn render_pie(frame: &mut Frame, area: Rect, title: &str, shares: &[Share]) {
     let block = Block::bordered().title(title);
     let inner = block.inner(area);
     frame.render_widget(block, area);
 
-    let mut total = 0;
-    for (_, seconds, _) in data {
-        total += seconds;
-    }
-
-    if total == 0 {
+    if shares.is_empty() {
         frame.render_widget(Paragraph::new("No activity yet"), inner);
         return;
     }
 
-    let mut slices = vec![];
-    let mut legend = vec![];
+    let slices: Vec<PieSlice> = shares
+        .iter()
+        .enumerate()
+        .map(|(i, s)| PieSlice::new(s.name.as_str(), s.total_seconds, PALETTE[i % PALETTE.len()]))
+        .collect();
 
-    for (name, seconds, color) in data {
-        slices.push(PieSlice::new(*name, *seconds as f64, *color));
+    let legend: Vec<Line> = shares
+        .iter()
+        .enumerate()
+        .map(|(i, s)| {
+            let secs = s.total_seconds as u64;
+            Line::from(vec![
+                Span::styled("■ ", Style::default().fg(PALETTE[i % PALETTE.len()])),
+                Span::raw(format!(
+                    "{}: {}h {}m ({:.1}%)",
+                    s.name,
+                    secs / 3600,
+                    (secs % 3600) / 60,
+                    s.percent,
+                )),
+            ])
+        })
+        .collect();
 
-        let percent = *seconds as f64 / total as f64 * 100.0;
-        let minutes = seconds / 60;
-        
-        // so it actually shows the numbers, yk the percemtage and umm total hourw
+    let legend_height = (shares.len() as u16).min(inner.height);
+    let rows =
+        Layout::vertical([Constraint::Min(0), Constraint::Length(legend_height)]).split(inner);
 
-        legend.push(Line::from(vec![
-            Span::raw(format!(
-                "{name}: {}h {}m ({percent:.1}%)",
-                minutes / 60,
-                minutes % 60,
-            )),
-        ]));
-    }
-
-    let rows = Layout::vertical([
-        Constraint::Min(0),
-        Constraint::Length(data.len().min(inner.height as usize) as u16),
-    ])
-    .split(inner);
-
-    let chart = PieChart::new(slices)
-        .show_legend(false);
+    let chart = PieChart::new(slices).show_legend(false);
 
     frame.render_widget(chart, rows[0]);
     frame.render_widget(Paragraph::new(legend), rows[1]);
-}    
+}
